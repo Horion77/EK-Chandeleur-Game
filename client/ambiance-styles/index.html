@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grand Jeu Chandeleur - Ambiance & Styles</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="game-card">
+    <!-- HEADER -->
+    <div class="card-header">
+        <div class="brand-container">
+            <div class="logo-main">Ambiance <span class="amp">&</span> Styles</div>
+            <div class="logo-slogan">Ensemble pour de bons moments</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+    </div>
+
+    <!-- ÉTAPE 1 : MENU PRINCIPAL -->
+    <div class="step-container active" id="step-1">
+        <h1>Le Grand Parcours Chandeleur</h1>
+        <p class="subtitle">Complétez les 3 défis pour découvrir votre profil<br>et tenter de gagner une crêpière MASTRAD&nbsp;!</p>
+
+        <div class="triangle-container">
+            <svg class="triangle-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 30 50 L 270 50 L 150 250 Z" />
+            </svg>
+
+            <div class="node node-1 unlocked" data-game="1" onclick="launchLevel(1)">
+                <div class="node-ring"></div>
+                <img src="/IMAGES APP A&S/IMAGE_SELECT_MEMORY.png" class="node-img" alt="Jeu 1">
+            </div>
+
+            <div class="node node-2 locked" data-game="2" onclick="launchLevel(2)">
+                <div class="node-ring"></div>
+                <img src="/IMAGES APP A&S/IMAGE_1_MEMORY_CREPE_CHOCO_BANANE.png" class="node-img" alt="Jeu 2">
+                <div class="node-lock">🔒</div>
+            </div>
+
+            <div class="node node-3 locked" data-game="3" onclick="launchLevel(3)">
+                <div class="node-ring"></div>
+                <img src="/IMAGES APP A&S/QUIZZ.png" class="node-img" alt="Jeu 3">
+                <div class="node-lock">🔒</div>
+            </div>
+
+            <button class="center-node locked" id="centerGiftBtn" onclick="launchFinalForm()" disabled>
+                <span class="gift-icon">🎁</span>
+            </button>
+        </div>
+
+        <p class="instruction-text">Cliquez sur un défi pour commencer</p>
+    </div>
+
+    <!-- ÉTAPE 2 : JEU MEMORY -->
+    <div class="step-container" id="step-2">
+        <button class="btn-back" onclick="backToMenu()">← Retour</button>
+        <div class="step-indicator">Jeu 1/3</div>
+        <h2>Memory des Crêpes</h2>
+        <p>Retrouvez les paires d'ingrédients !</p>
+        <div class="memory-grid" id="memoryGrid"></div>
+    </div>
+
+    <!-- ÉTAPE 3 : JEU DES MOTS -->
+    <div class="step-container" id="step-wordgame">
+        <button class="btn-back" onclick="backToMenu()">← Retour</button>
+        <div class="step-indicator">Jeu 2/3</div>
+        <h2 id="wordGameTitle">Trouvez le mot mystère</h2>
+        <p id="wordGameHint" class="hint-text"></p>
+        <div id="hintTimer" class="hint-timer">Indice dans <span id="timerSeconds">10</span>s</div>
+        <div class="answer-display" id="user-answer"></div>
+        <div class="word-container" id="scrambled-word"></div>
+        <div class="word-buttons">
+            <button class="btn-main" onclick="checkWord()">Valider</button>
+            <button class="btn-secondary" onclick="resetWord()">Recommencer</button>
+        </div>
+    </div>
+
+    <!-- ÉTAPE 4 : QUIZ -->
+    <div class="step-container" id="step-3">
+        <button class="btn-back" onclick="backToMenu()">← Retour</button>
+        <div class="step-indicator" id="questionIndicateur">Question 1/6</div>
+        <img id="questionImage" src="" alt="" class="question-image">
+        <h2 id="questionText">Question...</h2>
+        <div id="optionsContainer"></div>
+    </div>
+
+    <!-- ÉTAPE 5 : FORMULAIRE -->
+    <div class="step-container" id="step-4">
+        <div class="success-icon">🎉</div>
+        <h1>Félicitations !</h1>
+        <p>Renseignez vos informations pour découvrir votre profil Chandeleur et participer au tirage au sort.</p>
+        <form onsubmit="submitForm(event)" class="form-container">
+            <input type="text" class="input-field" placeholder="Prénom" required id="prenom">
+            <input type="text" class="input-field" placeholder="Nom" required id="nom">
+            <input type="email" class="input-field" placeholder="Email" required id="email">
+            <label class="checkbox-label">
+                <input type="checkbox" required class="checkbox-input">
+                <span>J'accepte de participer au jeu concours et de recevoir des communications personnalisées</span>
+            </label>
+            <button type="submit" class="btn-main">Découvrir mon profil</button>
+        </form>
+    </div>
+
+    <!-- ÉTAPE 6 : RÉSULTATS -->
+    <div class="step-container" id="step-5">
+        <div class="success-icon">🎁</div>
+        <h1 id="resultTitle">Votre Profil</h1>
+        <p id="resultDescription">Description du profil...</p>
+        <div id="produitsContainer"></div>
+        <button class="btn-main" onclick="resetGame()" style="margin-top: 25px;">Rejouer</button>
+    </div>
+
+    <!-- MODAL NOTIFICATION CUSTOM -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box">
+            <div class="modal-icon" id="modalIcon">🎉</div>
+            <h3 class="modal-title" id="modalTitle">Bravo !</h3>
+            <p class="modal-message" id="modalMessage">Message ici...</p>
+            <button class="btn-modal" id="modalBtn" onclick="closeModal()">Continuer</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
