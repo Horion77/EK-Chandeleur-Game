@@ -1,0 +1,189 @@
+/* ==========================================
+   BASE.CSS - Styles partagés entre toutes les enseignes
+   ========================================== */
+
+/* === RESET === */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Le background utilise les variables définies dans chaque enseigne */
+  background: linear-gradient(135deg, var(--bg-page) 0%, var(--bg-page-dark) 100%);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+
+/* === CARTE PRINCIPALE === */
+.game-card {
+  background: var(--bg-card);
+  width: 100%;
+  max-width: 450px;
+  max-height: 95vh;
+  border-radius: 24px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: cardAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes cardAppear {
+  from { opacity: 0; transform: scale(0.95) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* === HEADER & LOGO === */
+.card-header {
+  padding: 20px 20px 15px;
+  text-align: center;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FDFCFB 100%);
+  border-bottom: 1px solid var(--primary-light);
+}
+
+.brand-container {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-main {
+  font-family: 'Lora', serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: var(--primary);
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+.logo-main .amp {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.logo-slogan {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 0.8rem;
+  color: var(--primary);
+  margin-top: 5px;
+  letter-spacing: 0.5px;
+}
+
+.progress-container {
+  width: 100%;
+  height: 6px;
+  background: var(--primary-light);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-hover) 100%);
+  width: 10%;
+  transition: width 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* === ÉTAPES === */
+.step-container {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  opacity: 0;
+}
+
+.step-container.active {
+  display: flex;
+  opacity: 1;
+  animation: stepFadeIn 0.4s ease;
+}
+
+@keyframes stepFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === TYPOGRAPHIE === */
+h1 {
+  font-family: 'Lora', serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  line-height: 1.3;
+  color: var(--text-main);
+}
+
+h2 {
+  font-family: 'Lora', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  line-height: 1.3;
+  color: var(--text-main);
+}
+
+p, .subtitle {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+.step-indicator {
+  font-family: 'Lora', serif;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.instruction-text {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-top: 20px;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* === BOUTON RETOUR === */
+.btn-back {
+  align-self: flex-start;
+  background: var(--primary-light);
+  border: none;
+  color: var(--primary);
+  font-weight: 600;
+  padding: 10px 16px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+.btn-back:hover {
+  background: var(--primary-medium);
+  transform: translateX(-3px);
+}
+
+/* Copie tout le reste de ton style.css (nodes, triangle, memory, formulaires...) 
+   en remplaçant les couleurs en dur par var(--xxx) où c'est possible */

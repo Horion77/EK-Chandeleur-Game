@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin — Chandeleur</title>
+
+  <link rel="stylesheet" href="admin.css" />
+</head>
+
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-badge">&</div>
+        <div class="brand-title">Admin</div>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-item active" data-view="inscrits">Inscrits</button>
+        <button class="nav-item" data-view="stats">Stats</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="env">
+          <div class="env-label">Backend</div>
+          <div class="env-value" id="apiBaseUrlLabel">—</div>
+        </div>
+
+        <button class="btn btn-ghost" id="logoutBtn">Se déconnecter</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="crumb">Admin / <span id="crumbView">Inscrits</span></div>
+          <h1 class="page-title" id="pageTitle">Inscrits</h1>
+        </div>
+
+        <div class="topbar-actions">
+          <span class="pill" id="authStatusPill">Non connecté</span>
+          <button class="btn" id="refreshBtn">Rafraîchir</button>
+        </div>
+      </header>
+
+      <!-- LOGIN -->
+      <section class="card" id="loginCard">
+        <div class="card-header">
+          <h2>Connexion</h2>
+          <p class="muted">Accès réservé admin (token stocké en local).</p>
+        </div>
+
+        <form class="form" id="loginForm">
+          <label class="field">
+            <span>Email</span>
+            <input type="email" id="loginEmail" placeholder="admin@domaine.fr" required />
+          </label>
+
+          <label class="field">
+            <span>Mot de passe</span>
+            <input type="password" id="loginPassword" placeholder="••••••••" required />
+          </label>
+
+          <div class="row">
+            <button class="btn btn-primary" type="submit">Se connecter</button>
+            <span class="muted" id="loginMsg"></span>
+          </div>
+        </form>
+      </section>
+
+      <!-- INSCRITS -->
+      <section class="card hidden" id="inscritsCard">
+        <div class="card-header row-between">
+          <div>
+            <h2>Inscrits</h2>
+            <p class="muted">Liste des participants enregistrés.</p>
+          </div>
+          <div class="row">
+            <button class="btn btn-ghost" id="exportCsvBtn">Exporter CSV</button>
+            <button class="btn btn-danger" id="deleteSelectedBtn" disabled>Supprimer sélection</button>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search">
+            <input id="searchInput" placeholder="Rechercher (nom, prénom, email…)" />
+          </div>
+
+          <div class="filters">
+            <select id="enseigneSelect">
+              <option value="">Toutes enseignes</option>
+              <option value="ambiance-styles">Ambiance & Styles</option>
+              <option value="culinarion">Culinarion</option>
+            </select>
+
+            <select id="optinSelect">
+              <option value="">Opt-in (tous)</option>
+              <option value="true">Opt-in = oui</option>
+              <option value="false">Opt-in = non</option>
+            </select>
+
+            <select id="sortSelect">
+              <option value="created_at:desc">Date (récent → ancien)</option>
+              <option value="created_at:asc">Date (ancien → récent)</option>
+              <option value="nom:asc">Nom (A→Z)</option>
+              <option value="nom:desc">Nom (Z→A)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="col-check"><input type="checkbox" id="selectAll" /></th>
+                <th>Дата</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+                <th>Enseigne</th>
+                <th>Opt-in</th>
+              </tr>
+            </thead>
+            <tbody id="participantsTbody">
+              <tr><td colspan="7" class="muted">Chargement…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="footerbar">
+          <div class="muted" id="countLabel">0 inscrit</div>
+          <div class="pager">
+            <button class="btn btn-ghost" id="prevPageBtn">Précédent</button>
+            <div class="muted" id="pageLabel">Page 1</div>
+            <button class="btn btn-ghost" id="nextPageBtn">Suivant</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATS (placeholder) -->
+      <section class="card hidden" id="statsCard">
+        <div class="card-header">
+          <h2>Stats</h2>
+          <p class="muted">On le branchera après (par enseigne, opt-in, volume/jour).</p>
+        </div>
+        <div class="muted">À venir.</div>
+      </section>
+
+      <div class="toast" id="toast"></div>
+    </main>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

@@ -546,17 +546,32 @@ const produitsParProfil = {
 };
 
 /* === FORMULAIRE === */
-function submitForm(e) {
-    e.preventDefault();
+async function submitForm(e) {
+  e.preventDefault();
 
-    const prenom = document.getElementById('prenom').value;
-    const nom = document.getElementById('nom').value;
-    const email = document.getElementById('email').value;
+  const prenom = document.getElementById('prenom').value.trim();
+  const nom = document.getElementById('nom').value.trim();
+  const email = document.getElementById('email').value.trim();
 
-    console.log('Données:', {prenom, nom, email});
+  // optin : checkbox => true/false
+  const optInEl = document.querySelector('input[name="optin"]');
+  const opt_in = !!(optInEl && optInEl.checked);
 
+  // 1) Enregistrer en BDD via l'API
+  try {
+    const result = await window.API.createParticipant({ prenom, nom, email, opt_in });
+
+    // Utile plus tard si tu veux enregistrer les scores par session
+    window.currentSessionId = result.session_id;
+
+    // 2) Ensuite seulement calculer et afficher le profil
     calculerResultatsQuiz();
+  } catch (err) {
+    console.error("Erreur API:", err);
+    showModal('⚠️', 'Enregistrement impossible', "La participation n'a pas pu être enregistrée. Réessayez dans quelques secondes.");
+  }
 }
+
 
 function calculerResultatsQuiz() {
     let maxScore = 0;
