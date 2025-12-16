@@ -47,6 +47,8 @@ app.get('/admin/', (req, res) => {
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/participants', require('./routes/participants'));
 app.use('/api/stats', require('./routes/stats'));
+app.use('/shared', express.static(path.join(CLIENT_DIR, 'shared')));
+
 
 // Health check pour Railway
 app.get('/health', (req, res) => {

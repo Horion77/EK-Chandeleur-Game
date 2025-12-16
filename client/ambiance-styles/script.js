@@ -146,13 +146,14 @@ function resetGame() {
 
 /* === JEU 1 : MEMORY AVEC IMAGES === */
 const memoryImages = [
-    { id: 'crepe', url: 'images/IMAGE_1_MEMORY_CREPE_CHOCO_BANANE.png', alt: 'Crêpe choco-banane' },
-    { id: 'ustensiles', url: 'images/IMAGES APP A&S/IMAGE_2_MEMORY_USTENSILES.png', alt: 'USTENSILES' },
-    { id: 'ingredients', url: 'images/IMAGES APP A&S/IMAGE_6_INGREDIENTS.png', alt: 'ingredients' },
-    { id: 'beurre', url: 'images/IMAGES APP A&S/IMAGE_3_BEURIER.png', alt: 'Beurre' },
-    { id: 'shakeur', url: 'images/IMAGES APP A&S/IMAGE_4_SHAKEUR CREPE.png', alt: 'shakeur' },
-    { id: 'socle', url: 'images/IMAGES APP A&S/IMAGE_5_COUVERCLE_SOCLE.png', alt: 'socle' }
+  { id: 'crepe',       url: '/ambiance-styles/images/IMAGE_1_MEMORY_CREPE_CHOCO_BANANE.png', alt: 'Crêpe choco-banane' },
+  { id: 'ustensiles',  url: '/ambiance-styles/images/IMAGE_2_MEMORY_USTENSILES.png',          alt: 'USTENSILES' },
+  { id: 'ingredients', url: '/ambiance-styles/images/IMAGE_6_INGREDIENTS.png',                alt: 'Ingrédients' },
+  { id: 'beurre',      url: '/ambiance-styles/images/IMAGE_3_BEURER.png',                      alt: 'Beurre' }, 
+  { id: 'shakeur',     url: '/ambiance-styles/images/IMAGE_4_SHAKEUR_CREPE.png',               alt: 'Shakeur' },
+  { id: 'socle',       url: '/ambiance-styles/images/IMAGE_5_COUVERCLE_SOCLE.png',             alt: 'Socle' }
 ];
+
 
 let gameCards = [...memoryImages, ...memoryImages];
 let flippedCards = [];
@@ -553,24 +554,51 @@ async function submitForm(e) {
   const nom = document.getElementById('nom').value.trim();
   const email = document.getElementById('email').value.trim();
 
-  // optin : checkbox => true/false
-  const optInEl = document.querySelector('input[name="optin"]');
-  const opt_in = !!(optInEl && optInEl.checked);
+  // Optionnel : téléphone si tu ajoutes un champ plus tard
+  const telephone = '';
 
-  // 1) Enregistrer en BDD via l'API
+  // Si tu veux utiliser l'enseigne côté API (colonne enseigne_id ou autre)
+  const enseigneId = null; // ou une vraie valeur plus tard
+
+  // On calcule d'abord le profil pour l'affichage local
+  calculerResultatsQuiz();
+
+  // Ensuite on envoie en base, mais sans bloquer l'UX si ça rate
   try {
-    const result = await window.API.createParticipant({ prenom, nom, email, opt_in });
+    const API_BASE = window.APPCONFIG?.APIBASEURL || '';
+    const url = `${API_BASE.replace(/\/$/, '')}/api/participants`;
 
-    // Utile plus tard si tu veux enregistrer les scores par session
-    window.currentSessionId = result.session_id;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+        // Pas d'auth ici, c'est côté jeu public
+      },
+      body: JSON.stringify({
+        nom,
+        prenom,
+        email,
+        telephone,
+        enseigne_id: enseigneId
+      })
+    });
 
-    // 2) Ensuite seulement calculer et afficher le profil
-    calculerResultatsQuiz();
+    if (!res.ok) {
+      console.error('Erreur API participants:', res.status);
+      // On n'affiche pas d'erreur bloquante au joueur, on log juste
+    } else {
+      const data = await res.json();
+      console.log('Participant enregistré:', data);
+    }
   } catch (err) {
-    console.error("Erreur API:", err);
-    showModal('⚠️', 'Enregistrement impossible', "La participation n'a pas pu être enregistrée. Réessayez dans quelques secondes.");
+    console.error('Erreur réseau POST /api/participants:', err);
   }
+
+  // On affiche quand même les résultats au joueur
+  showStep('step-5');
+  updateProgress('5');
 }
+
 
 
 function calculerResultatsQuiz() {
