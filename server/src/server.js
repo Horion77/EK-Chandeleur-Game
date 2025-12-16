@@ -19,6 +19,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/ambiance-styles', express.static(path.join(__dirname, '..', 'public', 'ambiance-styles')));
 
 // ============ FRONT (static) ============
 // Chemin vers /client depuis /server/src (ton server.js est dans server/src/)
