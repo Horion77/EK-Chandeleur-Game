@@ -1,5 +1,5 @@
 /* ==========================================
-   BASE.CSS - Styles partagés entre toutes les enseignes
+   BASE.CSS - Styles partagés entre enseignes
    ========================================== */
 
 /* === RESET === */
@@ -11,7 +11,6 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  /* Le background utilise les variables définies dans chaque enseigne */
   background: linear-gradient(135deg, var(--bg-page) 0%, var(--bg-page-dark) 100%);
   color: var(--text-main);
   min-height: 100vh;
@@ -37,7 +36,7 @@ body {
 
 @keyframes cardAppear {
   from { opacity: 0; transform: scale(0.95) translateY(20px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 /* === HEADER & LOGO === */
@@ -113,10 +112,10 @@ body {
 
 @keyframes stepFadeIn {
   from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* === TYPOGRAPHIE === */
+/* === TYPO === */
 h1 {
   font-family: 'Lora', serif;
   font-size: 1.75rem;
@@ -135,7 +134,8 @@ h2 {
   color: var(--text-main);
 }
 
-p, .subtitle {
+p,
+.subtitle {
   color: var(--text-light);
   font-size: 0.95rem;
   line-height: 1.6;
@@ -162,7 +162,7 @@ p, .subtitle {
 
 @keyframes pulse {
   0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+  50%      { opacity: 1; }
 }
 
 /* === BOUTON RETOUR === */
@@ -185,5 +185,427 @@ p, .subtitle {
   transform: translateX(-3px);
 }
 
-/* Copie tout le reste de ton style.css (nodes, triangle, memory, formulaires...) 
-   en remplaçant les couleurs en dur par var(--xxx) où c'est possible */
+/* === TRIANGLE & NODES === */
+.triangle-container {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  height: 300px;
+  margin: 30px auto;
+}
+
+.triangle-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.triangle-svg path {
+  fill: none;
+  stroke: #D98C3A;
+  stroke-width: 15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 1;
+  filter: drop-shadow(0 4px 4px rgba(217, 140, 58, 0.3));
+  transition: all 0.3s ease;
+}
+
+.node {
+  position: absolute;
+  width: 115px;
+  height: 115px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 2;
+}
+
+.node:not(.locked):hover {
+  transform: scale(1.08);
+  filter: drop-shadow(0 8px 20px rgba(118, 44, 57, 0.25));
+}
+
+.node.locked {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.node-ring {
+  position: absolute;
+  inset: -8px;
+  border: 6px solid var(--primary);
+  border-radius: 50%;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.node:not(.locked):hover .node-ring {
+  border-width: 7px;
+  box-shadow: 0 0 0 3px rgba(118, 44, 57, 0.1);
+}
+
+.node-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transition: transform 0.4s ease;
+}
+
+.node:not(.locked):hover .node-img {
+  transform: scale(1.05);
+}
+
+.node-lock {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 50%;
+  backdrop-filter: blur(3px);
+  z-index: 3;
+}
+
+.node.completed .node-lock {
+  display: none;
+}
+
+.node.completed::after {
+  content: '✓';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: white;
+  background: rgba(46, 133, 64, 0.9);
+  border-radius: 50%;
+  z-index: 3;
+  animation: checkPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes checkPop {
+  0%   { transform: scale(0); opacity: 0; }
+  50%  { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.node-1 { top: 10px; left: 15px; }
+.node-2 { top: 10px; right: 15px; }
+.node-3 { bottom: 10px; left: 50%; margin-left: -57.5px; }
+
+/* === CADEAU CENTRAL === */
+.center-node {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: none;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(118, 44, 57, 0.4);
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.center-node.locked {
+  background: #ccc;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.center-node:not(.locked):hover {
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+/* === MEMORY === */
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.memory-card {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.4s;
+}
+
+.memory-card.flipped .memory-card-back {
+  opacity: 0;
+}
+
+.memory-card.flipped .memory-card-image {
+  opacity: 1;
+}
+
+.memory-card-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.memory-card-back {
+  position: absolute;
+  inset: 0;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  border-radius: 16px;
+  transition: opacity 0.3s;
+}
+
+/* === QUIZ IMAGE === */
+.question-image {
+  width: 100%;
+  max-width: 320px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  object-fit: cover;
+  display: block;
+}
+
+/* === BOUTONS GÉNÉRIQUES === */
+.btn-main {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-main:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+  background: #fff;
+  color: var(--primary);
+  border: 1px solid var(--primary-light);
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  border-color: var(--primary);
+}
+
+/* === QUIZ OPTIONS === */
+#optionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.btn-option {
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--primary-light);
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+}
+
+/* === FORMULAIRE === */
+.form-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--primary-light);
+  font-size: 0.95rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+.checkbox-input {
+  margin-top: 3px;
+}
+
+/* === PRODUITS === */
+.produit-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid var(--primary-light);
+  margin-bottom: 8px;
+}
+
+.produit-image {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.produit-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.produit-cta {
+  font-size: 0.8rem;
+  color: var(--primary);
+}
+
+/* === MODAL === */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-box {
+  background: #fff;
+  border-radius: 18px;
+  padding: 20px 22px;
+  width: 90%;
+  max-width: 360px;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.modal-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.modal-title {
+  font-family: 'Lora', serif;
+  font-size: 1.2rem;
+  margin-bottom: 6px;
+}
+
+.modal-message {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-bottom: 16px;
+}
+
+.btn-modal {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+/* === WORD GAME (boutons lettres) === */
+.word-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.word-btn {
+  min-width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--primary-light);
+  background: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.answer-display {
+  min-height: 28px;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+}
+
+.hint-timer {
+  font-size: 0.85rem;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.hint-timer.clickable {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* === DIVERS === */
+.success-icon {
+  font-size: 2.4rem;
+  margin-bottom: 10px;
+}
