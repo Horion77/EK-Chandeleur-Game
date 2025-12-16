@@ -35,18 +35,18 @@
 
             <div class="node node-1 unlocked" data-game="1" onclick="launchLevel(1)">
                 <div class="node-ring"></div>
-                <img src="/IMAGES APP A&S/IMAGE_SELECT_MEMORY.png" class="node-img" alt="Jeu 1">
+                <img src="/images/IMAGE_SELECT_MEMORY.png" class="node-img" alt="Jeu 1">
             </div>
 
             <div class="node node-2 locked" data-game="2" onclick="launchLevel(2)">
                 <div class="node-ring"></div>
-                <img src="/IMAGES APP A&S/IMAGE_1_MEMORY_CREPE_CHOCO_BANANE.png" class="node-img" alt="Jeu 2">
+                <img src="/images/IMAGE_1_MEMORY_CREPE_CHOCO_BANANE.png" class="node-img" alt="Jeu 2">
                 <div class="node-lock">🔒</div>
             </div>
 
             <div class="node node-3 locked" data-game="3" onclick="launchLevel(3)">
                 <div class="node-ring"></div>
-                <img src="/IMAGES APP A&S/QUIZZ.png" class="node-img" alt="Jeu 3">
+                <img src="/images/QUIZZ.png" class="node-img" alt="Jeu 3">
                 <div class="node-lock">🔒</div>
             </div>
 
@@ -96,14 +96,112 @@
         <div class="success-icon">🎉</div>
         <h1>Félicitations !</h1>
         <p>Renseignez vos informations pour découvrir votre profil Chandeleur et participer au tirage au sort.</p>
+
         <form onsubmit="submitForm(event)" class="form-container">
             <input type="text" class="input-field" placeholder="Prénom" required id="prenom">
             <input type="text" class="input-field" placeholder="Nom" required id="nom">
             <input type="email" class="input-field" placeholder="Email" required id="email">
+
+            <!-- NOUVEAU : champ magasin -->
+            <select class="input-field" id="magasin" required>
+                <option value="" disabled selected>Choisir votre magasin</option>
+                <option value="SOISSONS">A&S — SOISSONS</option>
+                <option value="VICHY">A&S — VICHY</option>
+                <option value="GAP">A&S — GAP</option>
+                <option value="ANTIBES">A&S — ANTIBES</option>
+                <option value="RODEZ">A&S — RODEZ</option>
+                <option value="VILLEFRANCHE DE ROUERGUE">A&S — VILLEFRANCHE DE ROUERGUE</option>
+                <option value="LISIEUX">A&S — LISIEUX</option>
+                <option value="HONFLEUR">A&S — HONFLEUR</option>
+                <option value="AURILLAC">A&S — AURILLAC</option>
+                <option value="SAINTES">A&S — SAINTES</option>
+                <option value="VAUX SUR MER">A&S — VAUX SUR MER</option>
+                <option value="BRIVE">A&S — BRIVE</option>
+                <option value="USSEL">A&S — USSEL</option>
+                <option value="SARROLA CARCOPINO">A&S — SARROLA CARCOPINO</option>
+                <option value="BIGUGLIA">A&S — BIGUGLIA</option>
+                <option value="SAINT BRIEUC CEDEX 2">A&S — SAINT BRIEUC CEDEX 2</option>
+                <option value="DINAN">A&S — DINAN</option>
+                <option value="ST QUAY PERROS">A&S — ST QUAY PERROS</option>
+                <option value="BOULAZAC ISLE MANOIRE (PERIGUEUX)">A&S — BOULAZAC ISLE MANOIRE (PERIGUEUX)</option>
+                <option value="CHALEZEULE">A&S — CHALEZEULE</option>
+                <option value="PONTARLIER">A&S — PONTARLIER</option>
+                <option value="GISORS">A&S — GISORS</option>
+                <option value="GUICHAINVILLE">A&S — GUICHAINVILLE</option>
+                <option value="Saint Marcel">A&S — Saint Marcel</option>
+                <option value="SAINT DENIS LES PONTS">A&S — SAINT DENIS LES PONTS</option>
+                <option value="QUIMPER">A&S — QUIMPER</option>
+                <option value="SAINT MARTIN DES CHAMPS">A&S — SAINT MARTIN DES CHAMPS</option>
+                <option value="LANDERNEAU">A&S — LANDERNEAU</option>
+                <option value="NIMES">A&S — NIMES</option>
+                <option value="ROUFFIAC-TOLOSAN">A&S — ROUFFIAC-TOLOSAN</option>
+                <option value="ARCACHON">A&S — ARCACHON</option>
+                <option value="FOUGERES">A&S — FOUGERES</option>
+                <option value="ST MALO">A&S — ST MALO</option>
+                <option value="PLECHATEL (Bain de Bretagne)">A&S — PLECHATEL (Bain de Bretagne)</option>
+                <option value="VITRE">A&S — VITRE</option>
+                <option value="ST GREGOIRE">A&S — ST GREGOIRE</option>
+                <option value="SALAISE SUR SANNE">A&S — SALAISE SUR SANNE</option>
+                <option value="ST PAUL LES DAX">A&S — ST PAUL LES DAX</option>
+                <option value="BLOIS">A&S — BLOIS</option>
+                <option value="ROMORANTIN LANTHENAY">A&S — ROMORANTIN LANTHENAY</option>
+                <option value="FEURS">A&S — FEURS</option>
+                <option value="ROANNE">A&S — ROANNE</option>
+                <option value="MONTBRISON">A&S — MONTBRISON</option>
+                <option value="ANCENIS ST GEREON">A&S — ANCENIS ST GEREON</option>
+                <option value="PORNIC">A&S — PORNIC</option>
+                <option value="GUERANDE">A&S — GUERANDE</option>
+                <option value="REZE">A&S — REZE</option>
+                <option value="AMILLY (MONTARGIS)">A&S — AMILLY (MONTARGIS)</option>
+                <option value="CAHORS">A&S — CAHORS</option>
+                <option value="MENDE">A&S — MENDE</option>
+                <option value="CHOLET Cedex">A&S — CHOLET Cedex</option>
+                <option value="SAUMUR">A&S — SAUMUR</option>
+                <option value="COUTANCES">A&S — COUTANCES</option>
+                <option value="SAINT MARTIN DES CHAMPS (AVRANCHES)">A&S — SAINT MARTIN DES CHAMPS (AVRANCHES)</option>
+                <option value="CHALONS EN CHAMPAGNE">A&S — CHALONS EN CHAMPAGNE</option>
+                <option value="CORMONTREUIL">A&S — CORMONTREUIL</option>
+                <option value="LAVAL">A&S — LAVAL</option>
+                <option value="BEAUVAIS">A&S — BEAUVAIS</option>
+                <option value="URRUGNE">A&S — URRUGNE</option>
+                <option value="CABESTANY">A&S — CABESTANY</option>
+                <option value="STRASBOURG">A&S — STRASBOURG</option>
+                <option value="SAVERNE">A&S — SAVERNE</option>
+                <option value="DORLISHEIM Cedex">A&S — DORLISHEIM Cedex</option>
+                <option value="HAGUENAU">A&S — HAGUENAU</option>
+                <option value="REICHSTETT">A&S — REICHSTETT</option>
+                <option value="SELESTAT">A&S — SELESTAT</option>
+                <option value="CERNAY">A&S — CERNAY</option>
+                <option value="BLOTZHEIM">A&S — BLOTZHEIM</option>
+                <option value="TASSIN LA DEMI LUNE">A&S — TASSIN LA DEMI LUNE</option>
+                <option value="VESOUL">A&S — VESOUL</option>
+                <option value="CHALON SUR SAONE">A&S — CHALON SUR SAONE</option>
+                <option value="CRECHES SUR SAONE">A&S — CRECHES SUR SAONE</option>
+                <option value="GRESY SUR AIX">A&S — GRESY SUR AIX</option>
+                <option value="GILLY SUR ISERE">A&S — GILLY SUR ISERE</option>
+                <option value="NIORT">A&S — NIORT</option>
+                <option value="AMIENS">A&S — AMIENS</option>
+                <option value="MONTAUBAN">A&S — MONTAUBAN</option>
+                <option value="PUGET SUR ARGENS  (FREJUS)">A&S — PUGET SUR ARGENS (FREJUS)</option>
+                <option value="ORANGE">A&S — ORANGE</option>
+                <option value="CHALLANS">A&S — CHALLANS</option>
+                <option value="POITIERS">A&S — POITIERS</option>
+                <option value="LIMOGES">A&S — LIMOGES</option>
+                <option value="NEUFCHATEAU">A&S — NEUFCHATEAU</option>
+                <option value="BELFORT">A&S — BELFORT</option>
+            </select>
+
             <label class="checkbox-label">
                 <input type="checkbox" required class="checkbox-input">
-                <span>J'accepte de participer au jeu concours et de recevoir des communications personnalisées</span>
+                <span>J'accepte de participer au jeu concours</span>
             </label>
+
+            <!-- NOUVEAU : opt-in traçable côté JS -->
+            <label class="checkbox-label">
+                <input type="checkbox" id="opt_in" class="checkbox-input">
+                <span>J'accepte de recevoir des communications personnalisées</span>
+            </label>
+
             <button type="submit" class="btn-main">Découvrir mon profil</button>
         </form>
     </div>
@@ -130,5 +228,9 @@
 </div>
 
 <script src="script.js"></script>
+<script src="config.js"></script>
+<script src="shared/js/api.js"></script>
+
+
 </body>
 </html>
