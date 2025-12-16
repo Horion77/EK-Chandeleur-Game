@@ -16,27 +16,27 @@ function showStep(stepId) {
     });
 
     const target = document.getElementById(stepId);
-    if(target) {
+    if (target) {
         target.style.display = 'flex';
         setTimeout(() => target.classList.add('active'), 10);
     }
 
-    if(stepId === 'step-1') updateMenuState();
+    if (stepId === 'step-1') updateMenuState();
 }
 
 function updateProgress(step) {
     let percentage = 0;
-    if(step === 1) percentage = 10;
-    if(step === 2) percentage = 30;
-    if(step === 'wordgame') percentage = 60;
-    if(step === 3) percentage = 85;
-    if(step === 4 || step === 5) percentage = 100;
+    if (step === 1) percentage = 10;
+    if (step === 2) percentage = 30;
+    if (step === 'wordgame') percentage = 60;
+    if (step === 3) percentage = 85;
+    if (step === 4 || step === 5) percentage = 100;
     document.getElementById('progressBar').style.width = percentage + '%';
 }
 
 function backToMenu() {
-    if(hintTimer) clearTimeout(hintTimer);
-    if(timerInterval) clearInterval(timerInterval);
+    if (hintTimer) clearTimeout(hintTimer);
+    if (timerInterval) clearInterval(timerInterval);
 
     showStep('step-1');
     updateProgress(1);
@@ -49,20 +49,20 @@ function updateMenuState() {
     const node3 = document.querySelector('.node-3');
     const centerBtn = document.getElementById('centerGiftBtn');
 
-    if(gameState.level1Done) {
+    if (gameState.level1Done) {
         node1.classList.add('completed');
         node1.querySelector('.node-lock')?.remove();
         node2.classList.remove('locked');
         node2.querySelector('.node-lock')?.remove();
     }
 
-    if(gameState.level2Done) {
+    if (gameState.level2Done) {
         node2.classList.add('completed');
         node3.classList.remove('locked');
         node3.querySelector('.node-lock')?.remove();
     }
 
-    if(gameState.level3Done) {
+    if (gameState.level3Done) {
         node3.classList.add('completed');
         centerBtn.classList.remove('locked');
         centerBtn.disabled = false;
@@ -71,35 +71,35 @@ function updateMenuState() {
 
 /* === LANCEURS DE JEUX === */
 function launchLevel(level) {
-    if(level === 2 && !gameState.level1Done) {
+    if (level === 2 && !gameState.level1Done) {
         showModal('⚠️', 'Jeu verrouillé', "Complétez d'abord le jeu 1 pour débloquer celui-ci !");
         return;
     }
-    if(level === 3 && !gameState.level2Done) {
+    if (level === 3 && !gameState.level2Done) {
         showModal('⚠️', 'Jeu verrouillé', "Complétez d'abord le jeu 2 pour débloquer celui-ci !");
         return;
     }
 
-    if(level === 1) { 
-        initMemoryGame(); 
-        showStep('step-2'); 
+    if (level === 1) {
+        initMemoryGame();
+        showStep('step-2');
         updateProgress(2);
     }
-    if(level === 2) { 
-        initWordGame(); 
-        showStep('step-wordgame'); 
+    if (level === 2) {
+        initWordGame();
+        showStep('step-wordgame');
         updateProgress('wordgame');
     }
-    if(level === 3) { 
-        startQuiz(); 
-        showStep('step-3'); 
+    if (level === 3) {
+        startQuiz();
+        showStep('step-3');
         updateProgress(3);
     }
 }
 
 function launchFinalForm() {
-    if(!gameState.level3Done) {
-        showModal('⚠️', 'Accès refusé', 'Complétez les 3 jeux avant d\'accéder au formulaire final !');
+    if (!gameState.level3Done) {
+        showModal('⚠️', 'Accès refusé', "Complétez les 3 jeux avant d'accéder au formulaire final !");
         return;
     }
     showStep('step-4');
@@ -120,7 +120,7 @@ function resetGame() {
     const node2 = document.querySelector('.node-2');
     const node3 = document.querySelector('.node-3');
 
-    if(!node2.querySelector('.node-lock')) {
+    if (!node2.querySelector('.node-lock')) {
         node2.classList.add('locked');
         const lock2 = document.createElement('div');
         lock2.className = 'node-lock';
@@ -128,7 +128,7 @@ function resetGame() {
         node2.appendChild(lock2);
     }
 
-    if(!node3.querySelector('.node-lock')) {
+    if (!node3.querySelector('.node-lock')) {
         node3.classList.add('locked');
         const lock3 = document.createElement('div');
         lock3.className = 'node-lock';
@@ -146,14 +146,13 @@ function resetGame() {
 
 /* === JEU 1 : MEMORY AVEC IMAGES === */
 const memoryImages = [
-  { id: 'crepe',       url: '/ambiance-styles/images/IMAGE_1_MEMORY_CREPE_CHOCO_BANANE.png', alt: 'Crêpe choco-banane' },
-  { id: 'ustensiles',  url: '/ambiance-styles/images/IMAGE_2_MEMORY_USTENSILES.png',          alt: 'USTENSILES' },
-  { id: 'ingredients', url: '/ambiance-styles/images/IMAGE_6_INGREDIENTS.png',                alt: 'Ingrédients' },
-  { id: 'beurre',      url: '/ambiance-styles/images/IMAGE_3_BEURER.png',                      alt: 'Beurre' }, 
-  { id: 'shakeur',     url: '/ambiance-styles/images/IMAGE_4_SHAKEUR_CREPE.png',               alt: 'Shakeur' },
-  { id: 'socle',       url: '/ambiance-styles/images/IMAGE_5_COUVERCLE_SOCLE.png',             alt: 'Socle' }
+    { id: 'crepe',       url: 'images/IMAGE_1_MEMORY_CREPE_CHOCO_BANANE.png', alt: 'Crêpe choco-banane' },
+    { id: 'ustensiles',  url: 'images/IMAGE_2_MEMORY_USTENSILES.png',         alt: 'USTENSILES' },
+    { id: 'ingredients', url: 'images/IMAGE_6_INGREDIENTS.png',               alt: 'Ingrédients' },
+    { id: 'beurre',      url: 'images/IMAGE_3_BEURIER.png',                   alt: 'Beurre' },
+    { id: 'shakeur',     url: 'images/IMAGE_4_SHAKEUR_CREPE.png',             alt: 'Shakeur' },
+    { id: 'socle',       url: 'images/IMAGE_5_COUVERCLE_SOCLE.png',           alt: 'Socle' }
 ];
-
 
 let gameCards = [...memoryImages, ...memoryImages];
 let flippedCards = [];
@@ -161,7 +160,7 @@ let matchedPairs = 0;
 
 function initMemoryGame() {
     const grid = document.getElementById('memoryGrid');
-    if(!grid) return;
+    if (!grid) return;
 
     grid.innerHTML = '';
     matchedPairs = 0;
@@ -192,7 +191,9 @@ function initMemoryGame() {
 }
 
 function flipCard() {
-    if (flippedCards.length === 2 || this.classList.contains('flipped') || this.classList.contains('matched')) return;
+    if (flippedCards.length === 2 ||
+        this.classList.contains('flipped') ||
+        this.classList.contains('matched')) return;
 
     this.classList.add('flipped');
     flippedCards.push(this);
@@ -232,39 +233,36 @@ function checkForMatch() {
 /* === JEU 2 : MOTS DIFFICILES === */
 const wordsDatabase = [
     { word: "CHANDELEUR", hint: "La fête que nous célébrons aujourd'hui" },
-    { word: "FROMENT", hint: "Autre nom pour le blé, céréale de base" },
-    { word: "SPATULE", hint: "Ustensile plat pour retourner les crêpes" },
-    { word: "CARAMEL", hint: "Sucre chauffé jusqu'à brunir" },
-    { word: "SARRASIN", hint: "Farine utilisée pour les galettes bretonnes" },
-    { word: "LEVURE", hint: "Agent qui fait gonfler la pâte" },
-    { word: "FLAMBEE", hint: "Technique de cuisson spectaculaire avec alcool" },
-    { word: "BRETONNE", hint: "Région célèbre pour ses crêpes" },
-    { word: "SUZETTE", hint: "Crêpes ___ : dessert flambé célèbre" },
-    { word: "MIELLAT", hint: "Mélange de miel fondu" },
-    { word: "CANNELLE", hint: "Épice parfumée pour aromatiser" },
-    { word: "CONFITURE", hint: "Garniture sucrée aux fruits" }
+    { word: "FROMENT",    hint: "Autre nom pour le blé, céréale de base" },
+    { word: "SPATULE",    hint: "Ustensile plat pour retourner les crêpes" },
+    { word: "CARAMEL",    hint: "Sucre chauffé jusqu'à brunir" },
+    { word: "SARRASIN",   hint: "Farine utilisée pour les galettes bretonnes" },
+    { word: "LEVURE",     hint: "Agent qui fait gonfler la pâte" },
+    { word: "FLAMBEE",    hint: "Technique de cuisson spectaculaire avec alcool" },
+    { word: "BRETONNE",   hint: "Région célèbre pour ses crêpes" },
+    { word: "SUZETTE",    hint: "Crêpes ___ : dessert flambé célèbre" },
+    { word: "MIELLAT",    hint: "Mélange de miel fondu" },
+    { word: "CANNELLE",   hint: "Épice parfumée pour aromatiser" },
+    { word: "CONFITURE",  hint: "Garniture sucrée aux fruits" }
 ];
 
 let currentWord = null;
 let currentGuess = "";
 let wordsCompleted = 0;
-let timeRemaining = 10; // ← CHANGÉ À 10 SECONDES
-let usedWords = []; // ← NOUVEAU : évite les doublons
+let timeRemaining = 10;
+let usedWords = [];
 const WORDS_TO_WIN = 3;
 
 function initWordGame() {
-    // Filtrer les mots déjà utilisés
     let availableWords = wordsDatabase.filter(w => !usedWords.includes(w.word));
-    
-    // Si tous les mots ont été utilisés, reset
-    if(availableWords.length === 0) {
+
+    if (availableWords.length === 0) {
         usedWords = [];
         availableWords = [...wordsDatabase];
     }
-    
-    // Choisir un mot aléatoire parmi les disponibles
+
     currentWord = availableWords[Math.floor(Math.random() * availableWords.length)];
-    usedWords.push(currentWord.word); // Marquer comme utilisé
+    usedWords.push(currentWord.word);
 
     const container = document.getElementById('scrambled-word');
     const answerDisplay = document.getElementById('user-answer');
@@ -276,7 +274,7 @@ function initWordGame() {
     hintEl.innerText = '';
     hintEl.style.display = 'none';
 
-    timeRemaining = 10; // ← 10 secondes
+    timeRemaining = 10;
     timerEl.style.display = 'inline-block';
     timerEl.classList.remove('clickable');
     timerEl.onclick = null;
@@ -293,7 +291,7 @@ function initWordGame() {
         btn.innerText = char;
         btn.className = 'word-btn';
 
-        btn.onclick = function() {
+        btn.onclick = function () {
             currentGuess += char;
             answerDisplay.innerText = currentGuess;
             this.style.visibility = "hidden";
@@ -306,8 +304,8 @@ function initWordGame() {
 }
 
 function startHintTimer() {
-    if(hintTimer) clearTimeout(hintTimer);
-    if(timerInterval) clearInterval(timerInterval);
+    if (hintTimer) clearTimeout(hintTimer);
+    if (timerInterval) clearInterval(timerInterval);
 
     const timerSecondsEl = document.getElementById('timerSeconds');
     const hintEl = document.getElementById('wordGameHint');
@@ -317,13 +315,12 @@ function startHintTimer() {
         timeRemaining--;
         timerSecondsEl.innerText = timeRemaining;
 
-        if(timeRemaining <= 0) {
+        if (timeRemaining <= 0) {
             clearInterval(timerInterval);
-            
-            // ✅ RENDRE LE BOUTON CLIQUABLE
+
             timerEl.innerHTML = '💡 Cliquez pour un indice';
             timerEl.classList.add('clickable');
-            timerEl.onclick = function() {
+            timerEl.onclick = function () {
                 this.style.display = 'none';
                 hintEl.style.display = 'block';
                 hintEl.innerText = `💡 Indice : ${currentWord.hint}`;
@@ -344,14 +341,14 @@ function checkWord() {
     if (currentGuess === currentWord.word) {
         wordsCompleted++;
 
-        if(hintTimer) clearTimeout(hintTimer);
-        if(timerInterval) clearInterval(timerInterval);
+        if (hintTimer) clearTimeout(hintTimer);
+        if (timerInterval) clearInterval(timerInterval);
 
         if (wordsCompleted >= WORDS_TO_WIN) {
             showModal('🎉', 'Félicitations !', `Vous avez trouvé les ${WORDS_TO_WIN} mots !`, () => {
                 gameState.level2Done = true;
                 wordsCompleted = 0;
-                usedWords = []; // Reset les mots utilisés
+                usedWords = [];
                 showStep('step-1');
                 updateProgress(1);
             });
@@ -361,7 +358,7 @@ function checkWord() {
             });
         }
     } else {
-        showModal('❌', 'Oups !', 'Ce n\'est pas le bon mot. Réessayez !', () => {
+        showModal('❌', 'Oups !', "Ce n'est pas le bon mot. Réessayez !", () => {
             resetWord();
         });
     }
@@ -397,9 +394,9 @@ const questionsData = [
         question: "Selon la superstition, que faut-il tenir dans sa main gauche pour la première crêpe ?",
         image: "https://images.unsplash.com/photo-1621504450181-5d356f61d307?w=600&h=400&fit=crop",
         reponses: [
-            { texte: "Une pièce de monnaie", isCorrect: true, feedback: "✓ Exact ! Une pièce d'or, idéalement !", points: { rassemble: 0, duo: 0, tradition: 0 } },
-            { texte: "Un fer à cheval", isCorrect: false, feedback: "✗ Raté ! C'était une pièce de monnaie.", points: { rassemble: 0, duo: 0, tradition: 0 } },
-            { texte: "La main de son voisin", isCorrect: false, feedback: "✗ Mignon, mais non ! C'est une pièce de monnaie.", points: { rassemble: 0, duo: 0, tradition: 0 } }
+            { texte: "Une pièce de monnaie", isCorrect: true, feedback: "✓ Exact ! Une pièce d'or, idéalement !" },
+            { texte: "Un fer à cheval", isCorrect: false, feedback: "✗ Raté ! C'était une pièce de monnaie." },
+            { texte: "La main de son voisin", isCorrect: false, feedback: "✗ Mignon, mais non ! C'est une pièce de monnaie." }
         ]
     },
     {
@@ -419,9 +416,9 @@ const questionsData = [
         question: "Pourquoi mange-t-on des crêpes à la Chandeleur ?",
         image: "https://images.unsplash.com/photo-1519676867240-f03562e64548?w=600&h=400&fit=crop",
         reponses: [
-            { texte: "Elles symbolisent le soleil", isCorrect: true, feedback: "✓ Bravo ! Leur forme ronde et dorée rappelle le soleil.", points: { rassemble: 0, duo: 0, tradition: 0 } },
-            { texte: "C'est une tradition royale", isCorrect: false, feedback: "✗ Non, c'est une fête liée aux saisons !", points: { rassemble: 0, duo: 0, tradition: 0 } },
-            { texte: "Pour bannir les mauvais esprits", isCorrect: false, feedback: "✗ Pas tout à fait, c'est pour fêter la fin de l'hiver.", points: { rassemble: 0, duo: 0, tradition: 0 } }
+            { texte: "Elles symbolisent le soleil", isCorrect: true, feedback: "✓ Bravo ! Leur forme ronde et dorée rappelle le soleil." },
+            { texte: "C'est une tradition royale", isCorrect: false, feedback: "✗ Non, c'est une fête liée aux saisons !" },
+            { texte: "Pour bannir les mauvais esprits", isCorrect: false, feedback: "✗ Pas tout à fait, c'est pour fêter la fin de l'hiver." }
         ]
     },
     {
@@ -453,7 +450,8 @@ function showQuestion() {
     imgEl.src = questionData.image;
     imgEl.style.display = 'block';
 
-    document.getElementById('questionIndicateur').innerText = `Question ${currentQuestionIndex + 1}/${questionsData.length}`;
+    document.getElementById('questionIndicateur').innerText =
+        `Question ${currentQuestionIndex + 1}/${questionsData.length}`;
     document.getElementById('questionText').innerText = questionData.question;
 
     const optionDiv = document.getElementById('optionsContainer');
@@ -482,7 +480,7 @@ function handleQuizResponse(reponseChoisie, boutonClique) {
             boutonClique.style.borderColor = '#C62828';
         }
 
-        setTimeout(() => { 
+        setTimeout(() => {
             showModal(
                 reponseChoisie.isCorrect ? '✓' : '✗',
                 reponseChoisie.isCorrect ? 'Bonne réponse !' : 'Dommage...',
@@ -506,7 +504,7 @@ function handleQuizResponse(reponseChoisie, boutonClique) {
 
 function passerQuestionsSuivante() {
     currentQuestionIndex++;
-    if (currentQuestionIndex < questionsData.length){
+    if (currentQuestionIndex < questionsData.length) {
         showQuestion();
     } else {
         showModal('🎉', 'Quiz terminé !', 'Tous les jeux sont complétés ! Accédez maintenant au formulaire final.', () => {
@@ -548,67 +546,27 @@ const produitsParProfil = {
 
 /* === FORMULAIRE === */
 async function submitForm(e) {
-  e.preventDefault();
+    e.preventDefault();
 
-  const prenom = document.getElementById('prenom').value.trim();
-  const nom = document.getElementById('nom').value.trim();
-  const email = document.getElementById('email').value.trim();
+    const prenom = document.getElementById('prenom').value.trim();
+    const nom = document.getElementById('nom').value.trim();
+    const email = document.getElementById('email').value.trim();
 
-  // Optionnel : téléphone si tu ajoutes un champ plus tard
-  const telephone = '';
+    calculerResultatsQuiz();
 
-  // Si tu veux utiliser l'enseigne côté API (colonne enseigne_id ou autre)
-  const enseigneId = null; // ou une vraie valeur plus tard
-
-  // On calcule d'abord le profil pour l'affichage local
-  calculerResultatsQuiz();
-
-  // Ensuite on envoie en base, mais sans bloquer l'UX si ça rate
-  try {
-    const API_BASE = window.APPCONFIG?.APIBASEURL || '';
-    const url = `${API_BASE.replace(/\/$/, '')}/api/participants`;
-
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-        // Pas d'auth ici, c'est côté jeu public
-      },
-      body: JSON.stringify({
-        nom,
-        prenom,
-        email,
-        telephone,
-        enseigne_id: enseigneId
-      })
-    });
-
-    if (!res.ok) {
-      console.error('Erreur API participants:', res.status);
-      // On n'affiche pas d'erreur bloquante au joueur, on log juste
-    } else {
-      const data = await res.json();
-      console.log('Participant enregistré:', data);
-    }
-  } catch (err) {
-    console.error('Erreur réseau POST /api/participants:', err);
-  }
-
-  // On affiche quand même les résultats au joueur
-  showStep('step-5');
-  updateProgress('5');
+    // Ici tu peux ajouter ton appel API plus tard si tu veux
+    showStep('step-5');
+    updateProgress(5);
 }
-
-
 
 function calculerResultatsQuiz() {
     let maxScore = 0;
     let finalProfile = "tradition";
 
     for (const [profil, score] of Object.entries(scoreUtilisateur)) {
-        if (score > maxScore) { 
-            maxScore = score; 
-            finalProfile = profil; 
+        if (score > maxScore) {
+            maxScore = score;
+            finalProfile = profil;
         }
     }
 
@@ -618,12 +576,10 @@ function calculerResultatsQuiz() {
     if (finalProfile === "rassemble") {
         titreProfil = "🎉 La Crêpière qui Rassemble";
         descProfil = "Pour vous, la Chandeleur c'est sacré : toute la tribu est là ! Vous aimez l'abondance et la convivialité.";
-    }
-    else if (finalProfile === "duo") {
+    } else if (finalProfile === "duo") {
         titreProfil = "💑 Le Duo Crêpes-Party";
         descProfil = "Moderne et fun, vous aimez les soirées détendues où chacun met la main à la pâte.";
-    }
-    else {
+    } else {
         titreProfil = "👵 La Tradition qui fait du Bien";
         descProfil = "Les recettes de grand-mère et le bon goût du beurre, c'est ça la vraie Chandeleur pour vous.";
     }
@@ -663,20 +619,20 @@ function showModal(icon, title, message, callback = null) {
     const modalIcon = document.getElementById('modalIcon');
     const modalTitle = document.getElementById('modalTitle');
     const modalMessage = document.getElementById('modalMessage');
-    
+
     modalIcon.innerText = icon;
     modalTitle.innerText = title;
     modalMessage.innerText = message;
     modalCallback = callback;
-    
+
     modal.classList.add('active');
 }
 
 function closeModal() {
     const modal = document.getElementById('modalOverlay');
     modal.classList.remove('active');
-    
-    if(modalCallback) {
+
+    if (modalCallback) {
         setTimeout(modalCallback, 200);
         modalCallback = null;
     }
@@ -685,9 +641,9 @@ function closeModal() {
 // Fermer modal au clic sur l'overlay
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modalOverlay');
-    if(modal) {
+    if (modal) {
         modal.addEventListener('click', (e) => {
-            if(e.target === modal) {
+            if (e.target === modal) {
                 closeModal();
             }
         });

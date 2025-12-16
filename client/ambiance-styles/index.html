@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grand Jeu Chandeleur - Ambiance & Styles</title>
-    <link rel="stylesheet" href="/shared/css/base.css">
-    <link rel="stylesheet" href="/ambiance-styles/style.css">
 
+    <!-- CSS unique -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
@@ -28,7 +30,10 @@
     <!-- ÉTAPE 1 : MENU PRINCIPAL -->
     <div class="step-container active" id="step-1">
         <h1>Le Grand Parcours Chandeleur</h1>
-        <p class="subtitle">Complétez les 3 défis pour découvrir votre profil<br>et tenter de gagner une crêpière MASTRAD&nbsp;!</p>
+        <p class="subtitle">
+            Complétez les 3 défis pour découvrir votre profil<br>
+            et tenter de gagner une crêpière MASTRAD&nbsp;!
+        </p>
 
         <div class="triangle-container">
             <svg class="triangle-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
@@ -37,18 +42,18 @@
 
             <div class="node node-1 unlocked" data-game="1" onclick="launchLevel(1)">
                 <div class="node-ring"></div>
-                <img src="/ambiance-styles/images/IMAGE_SELECT_MEMORY.png" class="node-img" alt="Jeu 1">
+                <img src="images/IMAGE_SELECT_MEMORY.png" class="node-img" alt="Jeu 1">
             </div>
 
             <div class="node node-2 locked" data-game="2" onclick="launchLevel(2)">
                 <div class="node-ring"></div>
-                <img src="/ambiance-styles/images/IMAGE_1_MEMORY_CREPE_CHOCO_BANANE.png" class="node-img" alt="Jeu 2">
+                <img src="images/IMAGE_1_MEMORY_CREPE_CHOCO_BANANE.png" class="node-img" alt="Jeu 2">
                 <div class="node-lock">🔒</div>
             </div>
 
             <div class="node node-3 locked" data-game="3" onclick="launchLevel(3)">
                 <div class="node-ring"></div>
-                <img src="/ambiance-styles/images/QUIZZ.png" class="node-img" alt="Jeu 3">
+                <img src="images/QUIZZ.png" class="node-img" alt="Jeu 3">
                 <div class="node-lock">🔒</div>
             </div>
 
@@ -128,10 +133,9 @@
             <button class="btn-modal" id="modalBtn" onclick="closeModal()">Continuer</button>
         </div>
     </div>
-
 </div>
 
-<script src="/ambiance-styles/config.js"></script>
-<script src="/ambiance-styles/script.js"></script>
+<!-- JS -->
+<script src="script.js"></script>
 </body>
 </html>
