@@ -1,360 +1,273 @@
-// =========================================================================
-// CONFIG
-// =========================================================================
+// ======================================================
+// STATE GLOBAL
+// ======================================================
 
-const API_BASE_URL = (typeof window !== "undefined" && window.API_BASE_URL) ? window.API_BASE_URL : "";
-const ENSEIGNE = (typeof window !== "undefined" && window.ENSEIGNE) ? window.ENSEIGNE : "ambiance-styles";
+let currentStep = 1;
+let currentQuestionIndex = 0;
+let quizAnswers = [];
+let usedWords = new Set();
 
-// =========================================================================
-// STATE
-// =========================================================================
+// ======================================================
+// CONFIG QUIZ
+// ======================================================
 
-let currentStep = 1;         // 1..4
-let currentQuestion = 0;
-let answers = [];
-let profile = null;
-
-// Exemple de questions (à adapter à ton contenu réel si besoin)
 const QUESTIONS = [
   {
-    title: "Question 1",
-    image: "./assets/q1.jpg",
+    text: "Quelle est ta crêpe préférée ?",
+    image: "/IMAGES APP A&S/IMAGE_1_MEMORY_CREPE_CHOCO_BANANE.png",
     options: [
-      { label: "Option A", value: "A" },
-      { label: "Option B", value: "B" },
-      { label: "Option C", value: "C" }
+      { label: "Sucre", value: "A" },
+      { label: "Chocolat", value: "B" },
+      { label: "Originale", value: "C" }
     ]
   },
   {
-    title: "Question 2",
-    image: "./assets/q2.jpg",
+    text: "Quand fais-tu des crêpes ?",
+    image: "/IMAGES APP A&S/QUIZZ.png",
     options: [
-      { label: "Option A", value: "A" },
-      { label: "Option B", value: "B" },
-      { label: "Option C", value: "C" }
-    ]
-  },
-  {
-    title: "Question 3",
-    image: "./assets/q3.jpg",
-    options: [
-      { label: "Option A", value: "A" },
-      { label: "Option B", value: "B" },
-      { label: "Option C", value: "C" }
+      { label: "Une fois par an", value: "A" },
+      { label: "Souvent", value: "B" },
+      { label: "Tout le temps", value: "C" }
     ]
   }
 ];
 
-// Exemples de profils (à adapter)
-const PROFILES = {
-  A: {
-    title: "Crêpier du dimanche",
-    desc: "Tu aimes la simplicité, les classiques, et tu sais faire plaisir sans prise de tête."
-  },
-  B: {
-    title: "Chef Crêpier",
-    desc: "Tu optimises tout : texture, cuisson, garnitures… tu vis crêpe."
-  },
-  C: {
-    title: "Créatif Gourmand",
-    desc: "Tu testes, tu mixes, tu surprends — la crêpe est ton terrain de jeu."
-  }
-};
+// ======================================================
+// CONFIG JEU DE MOTS
+// ======================================================
 
-// Word mini-game (exemple)
-const WORD_GAME = {
-  target: "CREPE",
-  hint: "Indice : ce que tu cuisines pour la Chandeleur"
-};
+const WORDS = [
+  { word: "CREPE", hint: "La star de la Chandeleur" },
+  { word: "SPATULE", hint: "Indispensable pour retourner" },
+  { word: "FROMENT", hint: "La base de la pâte" }
+];
 
-// =========================================================================
+let currentWord = null;
+let currentAnswer = "";
+
+// ======================================================
 // DOM
-// =========================================================================
+// ======================================================
 
-const progressBar = document.getElementById("progressBarFill");
-const progressText = document.getElementById("progressText");
+const steps = {
+  1: document.getElementById("step-1"),
+  2: document.getElementById("step-2"),
+  3: document.getElementById("step-wordgame"),
+  4: document.getElementById("step-3"),
+  5: document.getElementById("step-4"),
+  6: document.getElementById("step-5")
+};
 
-const step1 = document.getElementById("step1");
-const step2 = document.getElementById("step2");
-const step3 = document.getElementById("step3");
-const step4 = document.getElementById("step4");
+const progressBar = document.getElementById("progressBar");
 
-const btnStart = document.getElementById("btnStart");
-const btnStep1Next = document.getElementById("btnStep1Next");
-
-const questionTitle = document.getElementById("questionTitle");
+// Quiz
+const questionText = document.getElementById("questionText");
 const questionImage = document.getElementById("questionImage");
-const optionsGrid = document.getElementById("optionsGrid");
+const optionsContainer = document.getElementById("optionsContainer");
+const questionIndicator = document.getElementById("questionIndicateur");
 
-const resultTitle = document.getElementById("resultTitle");
-const resultDesc = document.getElementById("resultDesc");
-const btnGoRewards = document.getElementById("btnGoRewards");
-
-// Rewards
-const centerGiftBtn = document.getElementById("centerGiftBtn");
-const node1 = document.getElementById("node1");
-const node2 = document.getElementById("node2");
-const node3 = document.getElementById("node3");
+// Word game
+const scrambledWordContainer = document.getElementById("scrambled-word");
+const userAnswerDisplay = document.getElementById("user-answer");
+const wordHint = document.getElementById("wordGameHint");
+const hintTimer = document.getElementById("hintTimer");
+const timerSeconds = document.getElementById("timerSeconds");
 
 // Modal
 const modalOverlay = document.getElementById("modalOverlay");
 const modalTitle = document.getElementById("modalTitle");
 const modalMessage = document.getElementById("modalMessage");
-const modalPrimary = document.getElementById("modalPrimary");
-const modalSecondary = document.getElementById("modalSecondary");
 
-// Word game DOM (optional container inside modal)
-const wordGameWrap = document.getElementById("wordGameWrap");
-const scrambledContainer = document.getElementById("scrambledContainer");
-const wordInput = document.getElementById("wordInput");
-const wordHint = document.getElementById("wordHint");
-const btnCheckWord = document.getElementById("btnCheckWord");
+// ======================================================
+// NAVIGATION
+// ======================================================
 
-// =========================================================================
-// INIT
-// =========================================================================
-
-function init(){
+function showStep(step) {
+  Object.values(steps).forEach(s => s.classList.remove("active"));
+  steps[step].classList.add("active");
+  currentStep = step;
   updateProgress();
+}
+
+function updateProgress() {
+  const percent = ((currentStep - 1) / 5) * 100;
+  progressBar.style.width = `${percent}%`;
+}
+
+function backToMenu() {
   showStep(1);
+}
 
-  if (btnStart) btnStart.addEventListener("click", () => goToStep(2));
-  if (btnStep1Next) btnStep1Next.addEventListener("click", () => goToStep(2));
+function launchLevel(level) {
+  if (level === 1) {
+    showStep(2);
+    initMemory();
+  }
+  if (level === 2) {
+    showStep(3);
+    initWordGame();
+  }
+  if (level === 3) {
+    showStep(4);
+    startQuiz();
+  }
+}
 
-  if (btnGoRewards) btnGoRewards.addEventListener("click", () => goToStep(4));
+// ======================================================
+// MEMORY (placeholder simple)
+// ======================================================
 
-  if (modalOverlay) modalOverlay.addEventListener("click", (e) => {
-    if (e.target === modalOverlay) closeModal();
+function initMemory() {
+  // Ton memory est déjà fonctionnel → rien à casser ici
+  // Tu peux brancher ici la logique de fin :
+  setTimeout(() => {
+    document.querySelector(".node-1").classList.add("completed");
+    document.querySelector(".node-2").classList.remove("locked");
+  }, 500);
+}
+
+// ======================================================
+// JEU DE MOTS
+// ======================================================
+
+function initWordGame() {
+  currentWord = WORDS.find(w => !usedWords.has(w.word));
+  if (!currentWord) currentWord = WORDS[0];
+
+  usedWords.add(currentWord.word);
+  currentAnswer = "";
+  userAnswerDisplay.textContent = "";
+  scrambledWordContainer.innerHTML = "";
+  wordHint.style.display = "none";
+
+  const letters = shuffle([...currentWord.word]);
+
+  letters.forEach(letter => {
+    const btn = document.createElement("button");
+    btn.className = "word-btn";
+    btn.textContent = letter;
+    btn.onclick = () => addLetter(letter, btn);
+    scrambledWordContainer.appendChild(btn);
   });
 
-  if (modalSecondary) modalSecondary.addEventListener("click", closeModal);
-
-  if (centerGiftBtn) centerGiftBtn.addEventListener("click", openWordGame);
-
-  // Nodes (locked example)
-  if (node1) node1.addEventListener("click", () => showToast("Récompense 1", "Encore verrouillée."));
-  if (node2) node2.addEventListener("click", () => showToast("Récompense 2", "Encore verrouillée."));
-  if (node3) node3.addEventListener("click", () => showToast("Récompense 3", "Encore verrouillée."));
-
-  if (btnCheckWord) btnCheckWord.addEventListener("click", checkWord);
-
-  // Load first question when step2 is shown
-  renderQuestion(0);
+  startHintTimer();
 }
 
-document.addEventListener("DOMContentLoaded", init);
-
-// =========================================================================
-// NAV / PROGRESS
-// =========================================================================
-
-function showStep(n){
-  [step1, step2, step3, step4].forEach(el => {
-    if (!el) return;
-    el.classList.remove("active");
-  });
-
-  const target = [null, step1, step2, step3, step4][n];
-  if (target) target.classList.add("active");
-
-  currentStep = n;
-  updateProgress();
+function addLetter(letter, btn) {
+  currentAnswer += letter;
+  userAnswerDisplay.textContent = currentAnswer;
+  btn.style.visibility = "hidden";
 }
 
-function goToStep(n){
-  showStep(n);
-
-  if (n === 2){
-    currentQuestion = 0;
-    answers = [];
-    renderQuestion(0);
-  }
-
-  if (n === 3){
-    computeProfile();
-    renderResult();
-  }
+function resetWord() {
+  initWordGame();
 }
 
-function updateProgress(){
-  // 4 steps => 0..100
-  const percent = Math.round(((currentStep - 1) / 3) * 100);
-  if (progressBar) progressBar.style.width = `${percent}%`;
-  if (progressText) progressText.textContent = `Étape ${currentStep}/4`;
-}
-
-// =========================================================================
-// QUIZ
-// =========================================================================
-
-function renderQuestion(qIndex){
-  const q = QUESTIONS[qIndex];
-  if (!q) return;
-
-  if (questionTitle) questionTitle.textContent = q.title;
-
-  if (questionImage){
-    questionImage.src = q.image;
-    questionImage.alt = q.title;
-  }
-
-  if (optionsGrid){
-    optionsGrid.innerHTML = "";
-    q.options.forEach(opt => {
-      const btn = document.createElement("button");
-      btn.className = "option-btn";
-      btn.textContent = opt.label;
-      btn.addEventListener("click", () => selectOption(opt.value));
-      optionsGrid.appendChild(btn);
-    });
-  }
-}
-
-function selectOption(value){
-  answers.push(value);
-  currentQuestion++;
-
-  if (currentQuestion >= QUESTIONS.length){
-    goToStep(3);
-    return;
-  }
-  renderQuestion(currentQuestion);
-}
-
-// =========================================================================
-// RESULT
-// =========================================================================
-
-function computeProfile(){
-  // Exemple simple : majorité des réponses
-  const counts = answers.reduce((acc, v) => {
-    acc[v] = (acc[v] || 0) + 1;
-    return acc;
-  }, {});
-
-  let bestKey = "A";
-  let bestVal = -1;
-  Object.keys(counts).forEach(k => {
-    if (counts[k] > bestVal){
-      bestVal = counts[k];
-      bestKey = k;
-    }
-  });
-
-  profile = PROFILES[bestKey] || PROFILES.A;
-}
-
-function renderResult(){
-  if (!profile) return;
-  if (resultTitle) resultTitle.textContent = profile.title;
-  if (resultDesc) resultDesc.textContent = profile.desc;
-}
-
-// =========================================================================
-// MODAL / TOAST
-// =========================================================================
-
-function showToast(title, message){
-  // Reuse modal for consistent UX
-  showModal(title, message, {
-    primaryText: "OK",
-    onPrimary: closeModal,
-    secondaryText: null
-  });
-}
-
-function showModal(title, message, opts={}){
-  if (modalTitle) modalTitle.textContent = title || "";
-  if (modalMessage) modalMessage.textContent = message || "";
-
-  // Reset wordgame area if present
-  if (wordGameWrap) wordGameWrap.style.display = "none";
-
-  const {
-    primaryText = "OK",
-    onPrimary = closeModal,
-    secondaryText = "Fermer",
-    onSecondary = closeModal
-  } = opts;
-
-  if (modalPrimary){
-    modalPrimary.textContent = primaryText;
-    modalPrimary.onclick = onPrimary;
-    modalPrimary.style.display = primaryText ? "inline-flex" : "none";
-  }
-
-  if (modalSecondary){
-    if (secondaryText){
-      modalSecondary.textContent = secondaryText;
-      modalSecondary.onclick = onSecondary;
-      modalSecondary.style.display = "inline-flex";
-    } else {
-      modalSecondary.style.display = "none";
-    }
-  }
-
-  if (modalOverlay) modalOverlay.classList.add("active");
-}
-
-function closeModal(){
-  if (modalOverlay) modalOverlay.classList.remove("active");
-}
-
-// =========================================================================
-// WORD GAME
-// =========================================================================
-
-function openWordGame(){
-  showModal("Mini-jeu", "Recompose le mot pour débloquer ton cadeau.", {
-    primaryText: null,
-    secondaryText: "Fermer",
-    onSecondary: closeModal
-  });
-
-  if (wordGameWrap) wordGameWrap.style.display = "block";
-
-  if (wordHint) wordHint.textContent = WORD_GAME.hint;
-
-  // Build scrambled letters
-  const letters = WORD_GAME.target.split("");
-  const shuffled = shuffleArray([...letters]);
-
-  if (scrambledContainer){
-    scrambledContainer.innerHTML = "";
-    shuffled.forEach(letter => {
-      const b = document.createElement("button");
-      b.className = "word-btn";
-      b.textContent = letter;
-      b.addEventListener("click", () => {
-        if (!wordInput) return;
-        wordInput.value = (wordInput.value || "") + letter;
-      });
-      scrambledContainer.appendChild(b);
-    });
-  }
-
-  if (wordInput) wordInput.value = "";
-}
-
-function checkWord(){
-  const val = (wordInput?.value || "").trim().toUpperCase();
-  if (val === WORD_GAME.target){
-    closeModal();
-    showToast("Bravo !", "Cadeau débloqué. Tu peux maintenant cliquer à nouveau sur le centre pour le récupérer.");
-    // Ici tu peux déverrouiller node1/node2/node3 si tu veux
+function checkWord() {
+  if (currentAnswer === currentWord.word) {
+    document.querySelector(".node-2").classList.add("completed");
+    document.querySelector(".node-3").classList.remove("locked");
+    showModal("Bravo !", "Mot trouvé 🎉");
+    setTimeout(() => showStep(1), 800);
   } else {
-    showToast("Presque !", "Ce n’est pas le bon mot. Réessaie.");
+    showModal("Oups", "Ce n’est pas le bon mot.");
   }
 }
 
-// =========================================================================
-// UTIL
-// =========================================================================
+// ======================================================
+// INDICE TIMER
+// ======================================================
 
-function shuffleArray(arr){
-  for (let i = arr.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+function startHintTimer() {
+  let time = 10;
+  timerSeconds.textContent = time;
+  hintTimer.classList.remove("clickable");
+
+  const interval = setInterval(() => {
+    time--;
+    timerSeconds.textContent = time;
+    if (time <= 0) {
+      clearInterval(interval);
+      hintTimer.classList.add("clickable");
+      hintTimer.onclick = () => {
+        wordHint.textContent = currentWord.hint;
+        wordHint.style.display = "block";
+      };
+    }
+  }, 1000);
+}
+
+// ======================================================
+// QUIZ
+// ======================================================
+
+function startQuiz() {
+  currentQuestionIndex = 0;
+  quizAnswers = [];
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[currentQuestionIndex];
+  questionText.textContent = q.text;
+  questionImage.src = q.image;
+  optionsContainer.innerHTML = "";
+  questionIndicator.textContent = `Question ${currentQuestionIndex + 1}/${QUESTIONS.length}`;
+
+  q.options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.className = "btn-option";
+    btn.textContent = opt.label;
+    btn.onclick = () => selectOption(opt.value);
+    optionsContainer.appendChild(btn);
+  });
+}
+
+function selectOption(value) {
+  quizAnswers.push(value);
+  currentQuestionIndex++;
+
+  if (currentQuestionIndex >= QUESTIONS.length) {
+    document.querySelector(".node-3").classList.add("completed");
+    document.getElementById("centerGiftBtn").classList.remove("locked");
+    document.getElementById("centerGiftBtn").disabled = false;
+    showStep(5);
+  } else {
+    renderQuestion();
   }
-  return arr;
+}
+
+// ======================================================
+// FORM / RESULT
+// ======================================================
+
+function submitForm(e) {
+  e.preventDefault();
+  showStep(6);
+}
+
+function resetGame() {
+  location.reload();
+}
+
+// ======================================================
+// MODAL
+// ======================================================
+
+function showModal(title, message) {
+  modalTitle.textContent = title;
+  modalMessage.textContent = message;
+  modalOverlay.classList.add("active");
+}
+
+function closeModal() {
+  modalOverlay.classList.remove("active");
+}
+
+// ======================================================
+// UTIL
+// ======================================================
+
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
 }
