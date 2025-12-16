@@ -160,12 +160,12 @@ function resetGame() {
 
 /* === JEU 1 : MEMORY AVEC IMAGES === */
 const memoryImages = [
-    { id: 'crepe', url: '/images/IMAGE_1_MEMORY_CREPE_CHOCO_BANANE.png', alt: 'Crêpe choco-banane' },
-    { id: 'ustensiles', url: '/images/IMAGE_2_MEMORY_USTENSILES.png', alt: 'USTENSILES' },
-    { id: 'ingredients', url: '/images/IMAGE_6_INGREDIENTS.png', alt: 'ingredients' },
-    { id: 'beurre', url: '/images/IMAGE_3_BEURIER.png', alt: 'Beurre' },
-    { id: 'shakeur', url: '/images/IMAGE_4_SHAKEUR CREPE.png', alt: 'shakeur' },
-    { id: 'socle', url: '/images/IMAGE_5_COUVERCLE_SOCLE.png', alt: 'socle' }
+    { id: 'crepe', url: 'images/IMAGE_1_MEMORY_CREPE_CHOCO_BANANE.png', alt: 'Crêpe choco-banane' },
+    { id: 'ustensiles', url: 'images/IMAGE_2_MEMORY_USTENSILES.png', alt: 'USTENSILES' },
+    { id: 'ingredients', url: 'images/IMAGE_6_INGREDIENTS.png', alt: 'ingredients' },
+    { id: 'beurre', url: 'images/IMAGE_3_BEURIER.png', alt: 'Beurre' },
+    { id: 'shakeur', url: 'images/IMAGE_4_SHAKEUR CREPE.png', alt: 'shakeur' },
+    { id: 'socle', url: 'images/IMAGE_5_COUVERCLE_SOCLE.png', alt: 'socle' }
 ];
 
 let gameCards = [...memoryImages, ...memoryImages];
