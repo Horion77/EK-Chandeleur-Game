@@ -1,9 +1,22 @@
 const ADMIN_APP = {
-  API_BASE_URL: "https://ek-chandeleur-game-production.up.railway.app",
+  // Comme /admin et /api sont servis par le même serveur Railway, le plus robuste = origin courant.
+  API_BASE_URL: window.location.origin,
 
+  // Endpoints
   ENDPOINTS: {
-    login: "/api/admin/login",
-    participants: "/api/participants",
+    loginCandidates: [
+      "/api/admin/login",   // si tu as une route admin dédiée
+      "/api/auth/admin",    // fallback possible
+      "/api/auth/login"     // fallback possible
+    ],
+
+    // On teste plusieurs routes de listing (car ton backend peut exposer GET /api/participants différemment)
+    participantsCandidates: [
+      "/api/participants",
+      "/api/participants/list",
+      "/api/participants/admin"
+    ],
+
     deleteParticipant: (id) => `/api/participants/${id}`
   },
 
@@ -56,7 +69,8 @@ let state = {
   page: 1,
   total: 0,
   rows: [],
-  selected: new Set()
+  selected: new Set(),
+  participantsEndpoint: null // endpoint réellement utilisé après détection
 };
 
 // ---------- Utils
@@ -90,16 +104,17 @@ function setAuthUi() {
     authStatusPill.style.borderColor = "rgba(79,156,255,.35)";
     authStatusPill.style.color = "rgba(232,238,251,.85)";
     loginCard.classList.add("hidden");
-    // affichage des cards géré par setView()
   } else {
     authStatusPill.textContent = "Non connecté";
     authStatusPill.style.borderColor = "rgba(255,255,255,.08)";
     authStatusPill.style.color = "rgba(232,238,251,.65)";
     loginCard.classList.remove("hidden");
-    inscritsCard.classList.add("hidden");
-    statsCard.classList.add("hidden");
-    testsCard.classList.add("hidden");
   }
+
+  // Affichage des vues selon auth + onglet
+  inscritsCard.classList.toggle("hidden", !(isAuthed() && state.view === "inscrits"));
+  statsCard.classList.toggle("hidden", !(isAuthed() && state.view === "stats"));
+  testsCard.classList.toggle("hidden", !(isAuthed() && state.view === "tests"));
 }
 
 async function apiFetch(path, options = {}) {
@@ -115,14 +130,24 @@ async function apiFetch(path, options = {}) {
     delete options.json;
   }
 
-  const res = await fetch(`${ADMIN_APP.API_BASE_URL}${path}`, {
-    ...options,
-    headers
-  });
+  const url = path.startsWith("http") ? path : `${ADMIN_APP.API_BASE_URL}${path}`;
+
+  const res = await fetch(url, { ...options, headers });
 
   if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(text || `HTTP ${res.status}`);
+    const ct = res.headers.get("content-type") || "";
+    let payloadText = "";
+    try {
+      payloadText = ct.includes("application/json")
+        ? JSON.stringify(await res.json())
+        : await res.text();
+    } catch (_) {
+      payloadText = "";
+    }
+
+    const err = new Error(payloadText || `HTTP ${res.status}`);
+    err.status = res.status;
+    throw err;
   }
 
   const ct = res.headers.get("content-type") || "";
@@ -154,10 +179,47 @@ function escapeHtml(s) {
     .replaceAll("'", "&#039;");
 }
 
+function parseRowsAndTotal(data) {
+  const rows = data.rows || data.participants || data.data || data.items || [];
+  const total = data.total ?? data.count ?? rows.length;
+  return { rows, total };
+}
+
 // ---------- Data
+async function resolveParticipantsEndpoint() {
+  if (state.participantsEndpoint) return state.participantsEndpoint;
+
+  // test “léger” sans query (ou page=1)
+  const testQuery = buildQuery({ page: 1, limit: 1 });
+  for (const ep of ADMIN_APP.ENDPOINTS.participantsCandidates) {
+    try {
+      await apiFetch(`${ep}?${testQuery}`);
+      state.participantsEndpoint = ep;
+      return ep;
+    } catch (e) {
+      // si 404 => on continue à tester
+      if (e.status === 404) continue;
+
+      // si 401/403 => le endpoint existe probablement mais token requis; on le garde
+      if (e.status === 401 || e.status === 403) {
+        state.participantsEndpoint = ep;
+        return ep;
+      }
+
+      // autres erreurs : continue quand même
+      continue;
+    }
+  }
+
+  // fallback : on garde la valeur “standard”
+  state.participantsEndpoint = "/api/participants";
+  return state.participantsEndpoint;
+}
+
 async function loadParticipants() {
   tbody.innerHTML = `<tr><td colspan="7" class="muted">Chargement…</td></tr>`;
 
+  const endpoint = await resolveParticipantsEndpoint();
   const [sortField, sortDir] = (sortSelect.value || "created_at:desc").split(":");
 
   const query = buildQuery({
@@ -170,15 +232,13 @@ async function loadParticipants() {
     dir: sortDir
   });
 
-  const data = await apiFetch(`${ADMIN_APP.ENDPOINTS.participants}?${query}`);
-
-  const rows = data.rows || data.participants || data.data || [];
-  const total = data.total ?? rows.length;
+  const data = await apiFetch(`${endpoint}?${query}`);
+  const { rows, total } = parseRowsAndTotal(data);
 
   state.rows = rows;
   state.total = total;
   state.selected.clear();
-  selectAll.checked = false;
+  if (selectAll) selectAll.checked = false;
   deleteSelectedBtn.disabled = true;
 
   renderParticipants();
@@ -202,7 +262,6 @@ function renderParticipants() {
     const email = p.email ?? "";
     const enseigne = p.enseigne ?? "";
     const optin = (p.opt_in ?? p.optin ?? p.marketing_optin);
-
     const optinTxt = (optin === true || optin === "true") ? "oui" : "non";
 
     return `
@@ -241,16 +300,35 @@ async function handleLogin(e) {
   loginMsg.textContent = "";
 
   try {
-    const payload = { email: loginEmail.value.trim(), password: loginPassword.value };
-    const data = await apiFetch(ADMIN_APP.ENDPOINTS.login, { method: "POST", json: payload });
+    const payload = {
+      email: loginEmail.value.trim(),
+      username: loginEmail.value.trim(), // compat si ton backend attend "username"
+      password: loginPassword.value
+    };
+
+    let data = null;
+    let lastErr = null;
+
+    for (const ep of ADMIN_APP.ENDPOINTS.loginCandidates) {
+      try {
+        data = await apiFetch(ep, { method: "POST", json: payload });
+        break;
+      } catch (err) {
+        lastErr = err;
+        if (err.status === 404) continue; // on teste le prochain endpoint
+      }
+    }
+
+    if (!data) throw lastErr || new Error("Login impossible (endpoint introuvable)");
 
     const token = data.token || data.access_token;
-    if (!token) throw new Error("Token manquant dans la réponse /login");
+    if (!token) throw new Error("Token manquant dans la réponse du login");
 
     setToken(token);
+    state.page = 1;
     setAuthUi();
-    setView(state.view);
     toastMsg("Connecté");
+
     await loadParticipants();
   } catch (err) {
     loginMsg.textContent = "Connexion refusée";
@@ -286,7 +364,6 @@ async function exportCsv() {
 
 async function deleteSelected() {
   if (!state.selected.size) return;
-
   if (!confirm(`Supprimer ${state.selected.size} participant(s) ?`)) return;
 
   const ids = Array.from(state.selected);
@@ -296,9 +373,7 @@ async function deleteSelected() {
     try {
       await apiFetch(ADMIN_APP.ENDPOINTS.deleteParticipant(id), { method: "DELETE" });
       ok++;
-    } catch (e) {
-      // continue
-    }
+    } catch (_) { /* continue */ }
   }
 
   toastMsg(`Supprimés: ${ok}/${ids.length}`);
@@ -317,17 +392,15 @@ function setView(view) {
   crumbView.textContent = label;
   pageTitle.textContent = label;
 
-  // si pas connecté, on masque tout sauf login
-  if (!isAuthed()) {
-    inscritsCard.classList.add("hidden");
-    statsCard.classList.add("hidden");
-    testsCard.classList.add("hidden");
-    return;
-  }
+  setAuthUi();
+}
 
-  inscritsCard.classList.toggle("hidden", view !== "inscrits");
-  statsCard.classList.toggle("hidden", view !== "stats");
-  testsCard.classList.toggle("hidden", view !== "tests");
+function debounce(fn, wait) {
+  let t = null;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), wait);
+  };
 }
 
 function wireEvents() {
@@ -335,22 +408,33 @@ function wireEvents() {
 
   logoutBtn.addEventListener("click", () => {
     clearToken();
+    state.participantsEndpoint = null;
     setAuthUi();
-    setView("inscrits");
     toastMsg("Déconnecté");
   });
 
   refreshBtn.addEventListener("click", async () => {
     if (!isAuthed()) return toastMsg("Connecte-toi d'abord");
-    await loadParticipants();
-    toastMsg("OK");
+    try {
+      await loadParticipants();
+      toastMsg("OK");
+    } catch (e) {
+      // On ne “déconnecte” pas sur un 404/500.
+      // On ne purge le token que si le serveur dit clairement qu'il est invalide.
+      if (e.status === 401 || e.status === 403) {
+        clearToken();
+        setAuthUi();
+        toastMsg("Session expirée, reconnecte-toi");
+      } else {
+        toastMsg(`Erreur: ${e.message}`);
+      }
+    }
   });
 
   document.querySelectorAll(".nav-item").forEach((b) => {
     b.addEventListener("click", () => setView(b.dataset.view));
   });
 
-  // filtres
   const reload = async () => {
     state.page = 1;
     await loadParticipants();
@@ -361,7 +445,6 @@ function wireEvents() {
   optinSelect.addEventListener("change", reload);
   sortSelect.addEventListener("change", reload);
 
-  // pagination
   prevPageBtn.addEventListener("click", async () => {
     if (state.page <= 1) return;
     state.page--;
@@ -387,30 +470,6 @@ function wireEvents() {
 
   exportCsvBtn.addEventListener("click", exportCsv);
   deleteSelectedBtn.addEventListener("click", deleteSelected);
-
-  // ---- TESTS: ouvrir le jeu sur une étape donnée
-  document.querySelectorAll("[data-open-game]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      if (!isAuthed()) return toastMsg("Connecte-toi d'abord");
-
-      const action = btn.dataset.openGame;
-
-      // on ouvre le front ambiance-styles avec un paramètre goto
-      const base = `${ADMIN_APP.API_BASE_URL}/ambiance-styles/`;
-      const url = new URL(base);
-      url.searchParams.set("goto", action);
-
-      window.open(url.toString(), "_blank", "noopener");
-    });
-  });
-}
-
-function debounce(fn, wait) {
-  let t = null;
-  return (...args) => {
-    clearTimeout(t);
-    t = setTimeout(() => fn(...args), wait);
-  };
 }
 
 // ---------- Init
@@ -419,14 +478,18 @@ function debounce(fn, wait) {
   wireEvents();
   setView("inscrits");
 
+  // si déjà connecté : on charge sans supprimer le token au moindre souci
   if (isAuthed()) {
     try {
       await loadParticipants();
     } catch (e) {
-      toastMsg("Token invalide, reconnecte-toi");
-      clearToken();
-      setAuthUi();
-      setView("inscrits");
+      if (e.status === 401 || e.status === 403) {
+        clearToken();
+        setAuthUi();
+        toastMsg("Token invalide, reconnecte-toi");
+      } else {
+        toastMsg(`Erreur chargement: ${e.message}`);
+      }
     }
   }
 })();

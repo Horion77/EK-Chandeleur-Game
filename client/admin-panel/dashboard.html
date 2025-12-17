@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Admin — Chandeleur</title>
-
   <link rel="stylesheet" href="admin.css" />
 </head>
 
@@ -54,8 +53,8 @@
 
         <form class="form" id="loginForm">
           <label class="field">
-            <span>Email</span>
-            <input type="email" id="loginEmail" placeholder="admin@domaine.fr" required />
+            <span>Identifiant</span>
+            <input type="text" id="loginEmail" placeholder="admin@ekfrance.fr" required />
           </label>
 
           <label class="field">
@@ -139,11 +138,11 @@
         </div>
       </section>
 
-      <!-- STATS (placeholder) -->
+      <!-- STATS -->
       <section class="card hidden" id="statsCard">
         <div class="card-header">
           <h2>Stats</h2>
-          <p class="muted">On le branchera après (par enseigne, opt-in, volume/jour).</p>
+          <p class="muted">À brancher ensuite.</p>
         </div>
         <div class="muted">À venir.</div>
       </section>
@@ -152,21 +151,21 @@
       <section class="card hidden" id="testsCard">
         <div class="card-header">
           <h2>Tests</h2>
-          <p class="muted">Accès direct aux écrans/jeux (pour test et QA).</p>
+          <p class="muted">Accès rapide aux écrans du jeu pour tester/débugger.</p>
         </div>
 
         <div class="row" style="flex-wrap:wrap; gap:10px; padding:6px;">
-          <button class="btn" data-open-game="menu">Ouvrir le menu</button>
-          <button class="btn" data-open-game="level1">Jeu 1 — Memory</button>
-          <button class="btn" data-open-game="level2">Jeu 2 — Mots</button>
-          <button class="btn" data-open-game="level3">Jeu 3 — Quiz</button>
-          <button class="btn" data-open-game="form">Formulaire</button>
-          <button class="btn btn-danger" data-open-game="all_done_form">Forcer jeux OK + Form</button>
+          <a class="btn" href="/ambiance-styles/" target="_blank" rel="noopener">Ouvrir le jeu (menu)</a>
+          <a class="btn" href="/ambiance-styles/?admin_test=memory" target="_blank" rel="noopener">Jeu 1 (Memory)</a>
+          <a class="btn" href="/ambiance-styles/?admin_test=word" target="_blank" rel="noopener">Jeu 2 (Mots)</a>
+          <a class="btn" href="/ambiance-styles/?admin_test=quiz" target="_blank" rel="noopener">Jeu 3 (Quiz)</a>
+          <a class="btn" href="/ambiance-styles/?admin_test=form" target="_blank" rel="noopener">Formulaire</a>
         </div>
 
-        <div class="muted" style="padding:6px;">
-          Ouvre Ambiance &amp; Styles dans un nouvel onglet sur l’étape demandée.
-        </div>
+        <p class="muted" style="padding:6px; margin-top:6px;">
+          Note : pour que ces liens ouvrent directement les bons écrans, il faut ajouter un mini “routeur” dans
+          <code>ambiance-styles/script.js</code> (je te donne le snippet juste après).
+        </p>
       </section>
 
       <div class="toast" id="toast"></div>
