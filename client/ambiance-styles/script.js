@@ -244,14 +244,14 @@ function checkForMatch() {
 
 /* === JEU 2 : MOTS DIFFICILES === */
 const wordsDatabase = [
-  { word: "CHANDELEUR", hint: "La fête que nous célébrons aujourd'hui" },
+  { word: "CHANDELEUR", hint: "Fête traditionnelle des crêpes (début février)" },
   { word: "FROMENT", hint: "Autre nom pour le blé, céréale de base" },
   { word: "SPATULE", hint: "Ustensile plat pour retourner les crêpes" },
   { word: "CARAMEL", hint: "Sucre chauffé jusqu'à brunir" },
   { word: "SARRASIN", hint: "Farine utilisée pour les galettes bretonnes" },
   { word: "LEVURE", hint: "Agent qui fait gonfler la pâte" },
   { word: "FLAMBEE", hint: "Technique de cuisson spectaculaire avec alcool" },
-  { word: "BRETONNE", hint: "Région célèbre pour ses crêpes" },
+  { word: "BRETONNE", hint: "Personne originaire de la terre des crêpes et du cidre" },
   { word: "SUZETTE", hint: "Crêpes ___ : dessert flambé célèbre" },
   { word: "MIELLAT", hint: "Mélange de miel fondu" },
   { word: "CANNELLE", hint: "Épice parfumée pour aromatiser" },
@@ -724,5 +724,38 @@ document.addEventListener('DOMContentLoaded', () => {
         closeModal();
       }
     });
+  }
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const goto = params.get("goto");
+  if (!goto) return;
+
+  // petite sécurité: évite les valeurs surprises
+  const allowed = new Set(["menu","level1","level2","level3","form","all_done_form"]);
+  if (!allowed.has(goto)) return;
+
+  // Helpers
+  const openMenu = () => { showStep("step-1"); updateProgress(1); };
+  const openLevel1 = () => { launchLevel(1); };
+  const openLevel2 = () => { gameState.level1Done = true; updateMenuState(); launchLevel(2); };
+  const openLevel3 = () => { gameState.level1Done = true; gameState.level2Done = true; updateMenuState(); launchLevel(3); };
+  const openForm = () => { showStep("step-4"); updateProgress(4); };
+
+  switch (goto) {
+    case "menu": openMenu(); break;
+    case "level1": openLevel1(); break;
+    case "level2": openLevel2(); break;
+    case "level3": openLevel3(); break;
+    case "form": openForm(); break;
+    case "all_done_form":
+      gameState.level1Done = true;
+      gameState.level2Done = true;
+      gameState.level3Done = true;
+      updateMenuState();
+      openForm();
+      break;
+    default:
+      openMenu();
   }
 });

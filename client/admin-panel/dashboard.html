@@ -19,6 +19,7 @@
       <nav class="nav">
         <button class="nav-item active" data-view="inscrits">Inscrits</button>
         <button class="nav-item" data-view="stats">Stats</button>
+        <button class="nav-item" data-view="tests">Tests</button>
       </nav>
 
       <div class="sidebar-footer">
@@ -114,7 +115,7 @@
             <thead>
               <tr>
                 <th class="col-check"><input type="checkbox" id="selectAll" /></th>
-                <th>Дата</th>
+                <th>Date</th>
                 <th>Nom</th>
                 <th>Prénom</th>
                 <th>Email</th>
@@ -145,6 +146,27 @@
           <p class="muted">On le branchera après (par enseigne, opt-in, volume/jour).</p>
         </div>
         <div class="muted">À venir.</div>
+      </section>
+
+      <!-- TESTS -->
+      <section class="card hidden" id="testsCard">
+        <div class="card-header">
+          <h2>Tests</h2>
+          <p class="muted">Accès direct aux écrans/jeux (pour test et QA).</p>
+        </div>
+
+        <div class="row" style="flex-wrap:wrap; gap:10px; padding:6px;">
+          <button class="btn" data-open-game="menu">Ouvrir le menu</button>
+          <button class="btn" data-open-game="level1">Jeu 1 — Memory</button>
+          <button class="btn" data-open-game="level2">Jeu 2 — Mots</button>
+          <button class="btn" data-open-game="level3">Jeu 3 — Quiz</button>
+          <button class="btn" data-open-game="form">Formulaire</button>
+          <button class="btn btn-danger" data-open-game="all_done_form">Forcer jeux OK + Form</button>
+        </div>
+
+        <div class="muted" style="padding:6px;">
+          Ouvre Ambiance &amp; Styles dans un nouvel onglet sur l’étape demandée.
+        </div>
       </section>
 
       <div class="toast" id="toast"></div>

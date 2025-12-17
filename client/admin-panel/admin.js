@@ -1,12 +1,10 @@
 const ADMIN_APP = {
-  // Mets ici ton backend Railway
   API_BASE_URL: "https://ek-chandeleur-game-production.up.railway.app",
 
-  // Endpoints (tu peux adapter si ton backend a d'autres routes)
   ENDPOINTS: {
-    login: "/api/admin/login",          // POST { email, password } => { token }
-    participants: "/api/participants",  // GET ?page=&limit=&q=&enseigne=&optin=&sort=
-    deleteParticipant: (id) => `/api/participants/${id}` // DELETE
+    login: "/api/admin/login",
+    participants: "/api/participants",
+    deleteParticipant: (id) => `/api/participants/${id}`
   },
 
   PAGE_SIZE: 25,
@@ -30,6 +28,8 @@ const logoutBtn = $("logoutBtn");
 
 const inscritsCard = $("inscritsCard");
 const statsCard = $("statsCard");
+const testsCard = $("testsCard");
+
 const pageTitle = $("pageTitle");
 const crumbView = $("crumbView");
 
@@ -90,13 +90,15 @@ function setAuthUi() {
     authStatusPill.style.borderColor = "rgba(79,156,255,.35)";
     authStatusPill.style.color = "rgba(232,238,251,.85)";
     loginCard.classList.add("hidden");
-    inscritsCard.classList.remove("hidden");
+    // affichage des cards géré par setView()
   } else {
     authStatusPill.textContent = "Non connecté";
     authStatusPill.style.borderColor = "rgba(255,255,255,.08)";
     authStatusPill.style.color = "rgba(232,238,251,.65)";
     loginCard.classList.remove("hidden");
     inscritsCard.classList.add("hidden");
+    statsCard.classList.add("hidden");
+    testsCard.classList.add("hidden");
   }
 }
 
@@ -107,7 +109,6 @@ async function apiFetch(path, options = {}) {
   const token = getToken();
   if (token) headers.set("Authorization", `Bearer ${token}`);
 
-  // Si on envoie du JSON
   if (options.json) {
     headers.set("Content-Type", "application/json");
     options.body = JSON.stringify(options.json);
@@ -124,7 +125,6 @@ async function apiFetch(path, options = {}) {
     throw new Error(text || `HTTP ${res.status}`);
   }
 
-  // certaines routes peuvent renvoyer du texte; on tente json
   const ct = res.headers.get("content-type") || "";
   if (ct.includes("application/json")) return res.json();
   return res.text();
@@ -160,22 +160,18 @@ async function loadParticipants() {
 
   const [sortField, sortDir] = (sortSelect.value || "created_at:desc").split(":");
 
-  // On envoie des params "classiques"
   const query = buildQuery({
     page: state.page,
     limit: ADMIN_APP.PAGE_SIZE,
     q: searchInput.value.trim(),
     enseigne: enseigneSelect.value,
-    optin: optinSelect.value,        // "true"/"false"
+    optin: optinSelect.value,
     sort: sortField,
     dir: sortDir
   });
 
   const data = await apiFetch(`${ADMIN_APP.ENDPOINTS.participants}?${query}`);
 
-  // On supporte 2 formats possibles de backend:
-  // - { rows: [...], total: 123 }
-  // - { participants: [...], total: 123 }
   const rows = data.rows || data.participants || data.data || [];
   const total = data.total ?? rows.length;
 
@@ -199,7 +195,6 @@ function renderParticipants() {
   }
 
   tbody.innerHTML = rows.map((p) => {
-    // On supporte plusieurs noms de colonnes possibles
     const id = p.id ?? p.participant_id ?? p.uuid ?? "";
     const created = p.created_at ?? p.createdAt ?? p.date ?? "";
     const nom = p.nom ?? p.last_name ?? "";
@@ -249,12 +244,12 @@ async function handleLogin(e) {
     const payload = { email: loginEmail.value.trim(), password: loginPassword.value };
     const data = await apiFetch(ADMIN_APP.ENDPOINTS.login, { method: "POST", json: payload });
 
-    // support { token } ou { access_token }
     const token = data.token || data.access_token;
     if (!token) throw new Error("Token manquant dans la réponse /login");
 
     setToken(token);
     setAuthUi();
+    setView(state.view);
     toastMsg("Connecté");
     await loadParticipants();
   } catch (err) {
@@ -264,7 +259,6 @@ async function handleLogin(e) {
 }
 
 async function exportCsv() {
-  // export local à partir des lignes déjà chargées (simple & robuste)
   const headers = ["date", "nom", "prenom", "email", "enseigne", "opt_in"];
   const lines = [headers.join(",")];
 
@@ -319,11 +313,21 @@ function setView(view) {
     b.classList.toggle("active", b.dataset.view === view);
   });
 
-  crumbView.textContent = view === "inscrits" ? "Inscrits" : "Stats";
-  pageTitle.textContent = view === "inscrits" ? "Inscrits" : "Stats";
+  const label = view === "inscrits" ? "Inscrits" : (view === "stats" ? "Stats" : "Tests");
+  crumbView.textContent = label;
+  pageTitle.textContent = label;
 
-  inscritsCard.classList.toggle("hidden", view !== "inscrits" || !isAuthed());
-  statsCard.classList.toggle("hidden", view !== "stats" || !isAuthed());
+  // si pas connecté, on masque tout sauf login
+  if (!isAuthed()) {
+    inscritsCard.classList.add("hidden");
+    statsCard.classList.add("hidden");
+    testsCard.classList.add("hidden");
+    return;
+  }
+
+  inscritsCard.classList.toggle("hidden", view !== "inscrits");
+  statsCard.classList.toggle("hidden", view !== "stats");
+  testsCard.classList.toggle("hidden", view !== "tests");
 }
 
 function wireEvents() {
@@ -332,6 +336,7 @@ function wireEvents() {
   logoutBtn.addEventListener("click", () => {
     clearToken();
     setAuthUi();
+    setView("inscrits");
     toastMsg("Déconnecté");
   });
 
@@ -364,7 +369,6 @@ function wireEvents() {
   });
 
   nextPageBtn.addEventListener("click", async () => {
-    // on avance “optimiste” (si backend renvoie moins de rows => page vide)
     state.page++;
     await loadParticipants();
   });
@@ -383,6 +387,22 @@ function wireEvents() {
 
   exportCsvBtn.addEventListener("click", exportCsv);
   deleteSelectedBtn.addEventListener("click", deleteSelected);
+
+  // ---- TESTS: ouvrir le jeu sur une étape donnée
+  document.querySelectorAll("[data-open-game]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (!isAuthed()) return toastMsg("Connecte-toi d'abord");
+
+      const action = btn.dataset.openGame;
+
+      // on ouvre le front ambiance-styles avec un paramètre goto
+      const base = `${ADMIN_APP.API_BASE_URL}/ambiance-styles/`;
+      const url = new URL(base);
+      url.searchParams.set("goto", action);
+
+      window.open(url.toString(), "_blank", "noopener");
+    });
+  });
 }
 
 function debounce(fn, wait) {
@@ -406,6 +426,7 @@ function debounce(fn, wait) {
       toastMsg("Token invalide, reconnecte-toi");
       clearToken();
       setAuthUi();
+      setView("inscrits");
     }
   }
 })();
