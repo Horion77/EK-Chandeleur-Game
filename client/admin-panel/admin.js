@@ -1,23 +1,30 @@
 const ADMIN_APP = {
-  // Comme /admin et /api sont servis par le même serveur Railway, le plus robuste = origin courant.
+  // /admin et l'API étant servis par le même serveur Railway, le plus robuste = origin courant
   API_BASE_URL: window.location.origin,
 
-  // Endpoints
   ENDPOINTS: {
     loginCandidates: [
-      "/api/admin/login",   // si tu as une route admin dédiée
-      "/api/auth/admin",    // fallback possible
-      "/api/auth/login"     // fallback possible
+      "/api/admin/login",
+      "/api/auth/admin",
+      "/api/auth/login",
+      "/admin/login" // au cas où
     ],
 
-    // On teste plusieurs routes de listing (car ton backend peut exposer GET /api/participants différemment)
+    // IMPORTANT : on teste avec et sans /api
     participantsCandidates: [
       "/api/participants",
       "/api/participants/list",
-      "/api/participants/admin"
+      "/api/participants/admin",
+
+      "/participants",
+      "/participants/list",
+      "/participants/admin"
     ],
 
-    deleteParticipant: (id) => `/api/participants/${id}`
+    deleteParticipantCandidates: [
+      (id) => `/api/participants/${id}`,
+      (id) => `/participants/${id}`
+    ]
   },
 
   PAGE_SIZE: 25,
@@ -41,7 +48,7 @@ const logoutBtn = $("logoutBtn");
 
 const inscritsCard = $("inscritsCard");
 const statsCard = $("statsCard");
-const testsCard = $("testsCard");
+const testsCard = $("testsCard"); // si tu l'as dans ton HTML (sinon laisse, ça n'empêche pas)
 
 const pageTitle = $("pageTitle");
 const crumbView = $("crumbView");
@@ -70,11 +77,13 @@ let state = {
   total: 0,
   rows: [],
   selected: new Set(),
-  participantsEndpoint: null // endpoint réellement utilisé après détection
+  participantsEndpoint: null,
+  deleteEndpointFactory: null
 };
 
 // ---------- Utils
 function toastMsg(message) {
+  if (!toast) return alert(message);
   toast.textContent = message;
   toast.classList.add("show");
   setTimeout(() => toast.classList.remove("show"), 2200);
@@ -83,38 +92,36 @@ function toastMsg(message) {
 function getToken() {
   return localStorage.getItem(ADMIN_APP.TOKEN_KEY);
 }
-
 function setToken(token) {
   localStorage.setItem(ADMIN_APP.TOKEN_KEY, token);
 }
-
 function clearToken() {
   localStorage.removeItem(ADMIN_APP.TOKEN_KEY);
 }
-
 function isAuthed() {
   return !!getToken();
 }
 
 function setAuthUi() {
-  apiBaseUrlLabel.textContent = ADMIN_APP.API_BASE_URL;
+  if (apiBaseUrlLabel) apiBaseUrlLabel.textContent = ADMIN_APP.API_BASE_URL;
 
-  if (isAuthed()) {
-    authStatusPill.textContent = "Connecté";
-    authStatusPill.style.borderColor = "rgba(79,156,255,.35)";
-    authStatusPill.style.color = "rgba(232,238,251,.85)";
-    loginCard.classList.add("hidden");
-  } else {
-    authStatusPill.textContent = "Non connecté";
-    authStatusPill.style.borderColor = "rgba(255,255,255,.08)";
-    authStatusPill.style.color = "rgba(232,238,251,.65)";
-    loginCard.classList.remove("hidden");
+  if (authStatusPill) {
+    if (isAuthed()) {
+      authStatusPill.textContent = "Connecté";
+      authStatusPill.style.borderColor = "rgba(79,156,255,.35)";
+      authStatusPill.style.color = "rgba(232,238,251,.85)";
+    } else {
+      authStatusPill.textContent = "Non connecté";
+      authStatusPill.style.borderColor = "rgba(255,255,255,.08)";
+      authStatusPill.style.color = "rgba(232,238,251,.65)";
+    }
   }
 
-  // Affichage des vues selon auth + onglet
-  inscritsCard.classList.toggle("hidden", !(isAuthed() && state.view === "inscrits"));
-  statsCard.classList.toggle("hidden", !(isAuthed() && state.view === "stats"));
-  testsCard.classList.toggle("hidden", !(isAuthed() && state.view === "tests"));
+  if (loginCard) loginCard.classList.toggle("hidden", isAuthed());
+
+  if (inscritsCard) inscritsCard.classList.toggle("hidden", !(isAuthed() && state.view === "inscrits"));
+  if (statsCard) statsCard.classList.toggle("hidden", !(isAuthed() && state.view === "stats"));
+  if (testsCard) testsCard.classList.toggle("hidden", !(isAuthed() && state.view === "tests"));
 }
 
 async function apiFetch(path, options = {}) {
@@ -131,7 +138,6 @@ async function apiFetch(path, options = {}) {
   }
 
   const url = path.startsWith("http") ? path : `${ADMIN_APP.API_BASE_URL}${path}`;
-
   const res = await fetch(url, { ...options, headers });
 
   if (!res.ok) {
@@ -147,6 +153,7 @@ async function apiFetch(path, options = {}) {
 
     const err = new Error(payloadText || `HTTP ${res.status}`);
     err.status = res.status;
+    err.url = url;
     throw err;
   }
 
@@ -185,49 +192,63 @@ function parseRowsAndTotal(data) {
   return { rows, total };
 }
 
-// ---------- Data
+// ---------- Data : résolution endpoint participants + delete
 async function resolveParticipantsEndpoint() {
   if (state.participantsEndpoint) return state.participantsEndpoint;
 
-  // test “léger” sans query (ou page=1)
   const testQuery = buildQuery({ page: 1, limit: 1 });
+
   for (const ep of ADMIN_APP.ENDPOINTS.participantsCandidates) {
     try {
+      // On teste une URL "réaliste"
       await apiFetch(`${ep}?${testQuery}`);
       state.participantsEndpoint = ep;
+
+      // delete correspondant (même préfixe)
+      state.deleteEndpointFactory = ep.startsWith("/api/")
+        ? ADMIN_APP.ENDPOINTS.deleteParticipantCandidates[0]
+        : ADMIN_APP.ENDPOINTS.deleteParticipantCandidates[1];
+
       return ep;
     } catch (e) {
-      // si 404 => on continue à tester
+      // 404 -> on continue à tester
       if (e.status === 404) continue;
 
-      // si 401/403 => le endpoint existe probablement mais token requis; on le garde
+      // 401/403 -> endpoint existe probablement mais token requis : on le garde
       if (e.status === 401 || e.status === 403) {
         state.participantsEndpoint = ep;
+        state.deleteEndpointFactory = ep.startsWith("/api/")
+          ? ADMIN_APP.ENDPOINTS.deleteParticipantCandidates[0]
+          : ADMIN_APP.ENDPOINTS.deleteParticipantCandidates[1];
         return ep;
       }
 
-      // autres erreurs : continue quand même
+      // autres erreurs : on continue
       continue;
     }
   }
 
-  // fallback : on garde la valeur “standard”
-  state.participantsEndpoint = "/api/participants";
-  return state.participantsEndpoint;
+  // Aucun endpoint trouvé => on affiche un message clair
+  throw new Error(
+    "Aucune route 'participants' trouvée côté serveur (GET /api/participants ou /participants). " +
+    "Il faut ajouter la route de listing dans le backend."
+  );
 }
 
 async function loadParticipants() {
+  if (!tbody) return;
+
   tbody.innerHTML = `<tr><td colspan="7" class="muted">Chargement…</td></tr>`;
 
   const endpoint = await resolveParticipantsEndpoint();
-  const [sortField, sortDir] = (sortSelect.value || "created_at:desc").split(":");
+  const [sortField, sortDir] = (sortSelect?.value || "created_at:desc").split(":");
 
   const query = buildQuery({
     page: state.page,
     limit: ADMIN_APP.PAGE_SIZE,
-    q: searchInput.value.trim(),
-    enseigne: enseigneSelect.value,
-    optin: optinSelect.value,
+    q: searchInput?.value?.trim() || "",
+    enseigne: enseigneSelect?.value || "",
+    optin: optinSelect?.value || "",
     sort: sortField,
     dir: sortDir
   });
@@ -239,18 +260,18 @@ async function loadParticipants() {
   state.total = total;
   state.selected.clear();
   if (selectAll) selectAll.checked = false;
-  deleteSelectedBtn.disabled = true;
+  if (deleteSelectedBtn) deleteSelectedBtn.disabled = true;
 
   renderParticipants();
 }
 
 function renderParticipants() {
-  const rows = state.rows;
+  const rows = state.rows || [];
 
   if (!rows.length) {
     tbody.innerHTML = `<tr><td colspan="7" class="muted">Aucun résultat.</td></tr>`;
-    countLabel.textContent = "0 inscrit";
-    pageLabel.textContent = `Page ${state.page}`;
+    if (countLabel) countLabel.textContent = "0 inscrit";
+    if (pageLabel) pageLabel.textContent = `Page ${state.page}`;
     return;
   }
 
@@ -279,8 +300,8 @@ function renderParticipants() {
     `;
   }).join("");
 
-  countLabel.textContent = `${state.total} inscrit${state.total > 1 ? "s" : ""}`;
-  pageLabel.textContent = `Page ${state.page}`;
+  if (countLabel) countLabel.textContent = `${state.total} inscrit${state.total > 1 ? "s" : ""}`;
+  if (pageLabel) pageLabel.textContent = `Page ${state.page}`;
 
   tbody.querySelectorAll(".row-check").forEach((cb) => {
     cb.addEventListener("change", () => {
@@ -288,8 +309,8 @@ function renderParticipants() {
       if (cb.checked) state.selected.add(id);
       else state.selected.delete(id);
 
-      deleteSelectedBtn.disabled = state.selected.size === 0;
-      selectAll.checked = state.selected.size === state.rows.length;
+      if (deleteSelectedBtn) deleteSelectedBtn.disabled = state.selected.size === 0;
+      if (selectAll) selectAll.checked = state.selected.size === state.rows.length;
     });
   });
 }
@@ -297,12 +318,12 @@ function renderParticipants() {
 // ---------- Actions
 async function handleLogin(e) {
   e.preventDefault();
-  loginMsg.textContent = "";
+  if (loginMsg) loginMsg.textContent = "";
 
   try {
     const payload = {
       email: loginEmail.value.trim(),
-      username: loginEmail.value.trim(), // compat si ton backend attend "username"
+      username: loginEmail.value.trim(),
       password: loginPassword.value
     };
 
@@ -315,7 +336,7 @@ async function handleLogin(e) {
         break;
       } catch (err) {
         lastErr = err;
-        if (err.status === 404) continue; // on teste le prochain endpoint
+        if (err.status === 404) continue;
       }
     }
 
@@ -326,12 +347,14 @@ async function handleLogin(e) {
 
     setToken(token);
     state.page = 1;
+
+    // IMPORTANT : on ne reset PAS le token au refresh, et on ne “déconnecte” pas sur une erreur 404
     setAuthUi();
     toastMsg("Connecté");
 
     await loadParticipants();
   } catch (err) {
-    loginMsg.textContent = "Connexion refusée";
+    if (loginMsg) loginMsg.textContent = "Connexion refusée";
     toastMsg(`Login KO: ${err.message}`);
   }
 }
@@ -340,7 +363,7 @@ async function exportCsv() {
   const headers = ["date", "nom", "prenom", "email", "enseigne", "opt_in"];
   const lines = [headers.join(",")];
 
-  state.rows.forEach((p) => {
+  (state.rows || []).forEach((p) => {
     const created = p.created_at ?? p.createdAt ?? p.date ?? "";
     const nom = (p.nom ?? p.last_name ?? "");
     const prenom = (p.prenom ?? p.first_name ?? "");
@@ -369,9 +392,11 @@ async function deleteSelected() {
   const ids = Array.from(state.selected);
   let ok = 0;
 
+  const delFactory = state.deleteEndpointFactory || ADMIN_APP.ENDPOINTS.deleteParticipantCandidates[0];
+
   for (const id of ids) {
     try {
-      await apiFetch(ADMIN_APP.ENDPOINTS.deleteParticipant(id), { method: "DELETE" });
+      await apiFetch(delFactory(id), { method: "DELETE" });
       ok++;
     } catch (_) { /* continue */ }
   }
@@ -389,8 +414,8 @@ function setView(view) {
   });
 
   const label = view === "inscrits" ? "Inscrits" : (view === "stats" ? "Stats" : "Tests");
-  crumbView.textContent = label;
-  pageTitle.textContent = label;
+  if (crumbView) crumbView.textContent = label;
+  if (pageTitle) pageTitle.textContent = label;
 
   setAuthUi();
 }
@@ -404,23 +429,22 @@ function debounce(fn, wait) {
 }
 
 function wireEvents() {
-  loginForm.addEventListener("submit", handleLogin);
+  if (loginForm) loginForm.addEventListener("submit", handleLogin);
 
-  logoutBtn.addEventListener("click", () => {
+  if (logoutBtn) logoutBtn.addEventListener("click", () => {
     clearToken();
     state.participantsEndpoint = null;
+    state.deleteEndpointFactory = null;
     setAuthUi();
     toastMsg("Déconnecté");
   });
 
-  refreshBtn.addEventListener("click", async () => {
+  if (refreshBtn) refreshBtn.addEventListener("click", async () => {
     if (!isAuthed()) return toastMsg("Connecte-toi d'abord");
     try {
       await loadParticipants();
       toastMsg("OK");
     } catch (e) {
-      // On ne “déconnecte” pas sur un 404/500.
-      // On ne purge le token que si le serveur dit clairement qu'il est invalide.
       if (e.status === 401 || e.status === 403) {
         clearToken();
         setAuthUi();
@@ -440,23 +464,23 @@ function wireEvents() {
     await loadParticipants();
   };
 
-  searchInput.addEventListener("input", debounce(reload, 250));
-  enseigneSelect.addEventListener("change", reload);
-  optinSelect.addEventListener("change", reload);
-  sortSelect.addEventListener("change", reload);
+  if (searchInput) searchInput.addEventListener("input", debounce(reload, 250));
+  if (enseigneSelect) enseigneSelect.addEventListener("change", reload);
+  if (optinSelect) optinSelect.addEventListener("change", reload);
+  if (sortSelect) sortSelect.addEventListener("change", reload);
 
-  prevPageBtn.addEventListener("click", async () => {
+  if (prevPageBtn) prevPageBtn.addEventListener("click", async () => {
     if (state.page <= 1) return;
     state.page--;
     await loadParticipants();
   });
 
-  nextPageBtn.addEventListener("click", async () => {
+  if (nextPageBtn) nextPageBtn.addEventListener("click", async () => {
     state.page++;
     await loadParticipants();
   });
 
-  selectAll.addEventListener("change", () => {
+  if (selectAll) selectAll.addEventListener("change", () => {
     const checks = tbody.querySelectorAll(".row-check");
     state.selected.clear();
 
@@ -465,11 +489,11 @@ function wireEvents() {
       if (cb.checked) state.selected.add(cb.dataset.id);
     });
 
-    deleteSelectedBtn.disabled = state.selected.size === 0;
+    if (deleteSelectedBtn) deleteSelectedBtn.disabled = state.selected.size === 0;
   });
 
-  exportCsvBtn.addEventListener("click", exportCsv);
-  deleteSelectedBtn.addEventListener("click", deleteSelected);
+  if (exportCsvBtn) exportCsvBtn.addEventListener("click", exportCsv);
+  if (deleteSelectedBtn) deleteSelectedBtn.addEventListener("click", deleteSelected);
 }
 
 // ---------- Init
@@ -478,7 +502,7 @@ function wireEvents() {
   wireEvents();
   setView("inscrits");
 
-  // si déjà connecté : on charge sans supprimer le token au moindre souci
+  // Si déjà connecté, on charge sans déconnecter sur une simple 404
   if (isAuthed()) {
     try {
       await loadParticipants();
