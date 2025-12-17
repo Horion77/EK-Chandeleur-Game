@@ -266,79 +266,90 @@ let usedWords = [];
 const WORDS_TO_WIN = 3;
 
 function initWordGame() {
-  let availableWords = wordsDatabase.filter(w => !usedWords.includes(w.word));
-  if (availableWords.length === 0) {
-    usedWords = [];
-    availableWords = [...wordsDatabase];
-  }
+    // Filtrer les mots déjà utilisés
+    let availableWords = wordsDatabase.filter(w => !usedWords.includes(w.word));
 
-  currentWord = availableWords[Math.floor(Math.random() * availableWords.length)];
-  usedWords.push(currentWord.word);
+    // Si tous les mots ont été utilisés, reset
+    if (availableWords.length === 0) {
+        usedWords = [];
+        availableWords = [...wordsDatabase];
+    }
 
-  const container = document.getElementById('scrambled-word');
-  const answerDisplay = document.getElementById('user-answer');
-  const titleEl = document.getElementById('wordGameTitle');
-  const hintEl = document.getElementById('wordGameHint');
-  const timerEl = document.getElementById('hintTimer');
+    // Choisir un mot aléatoire parmi les disponibles
+    currentWord = availableWords[Math.floor(Math.random() * availableWords.length)];
+    usedWords.push(currentWord.word);
 
-  titleEl.innerText = `Mot ${wordsCompleted + 1}/${WORDS_TO_WIN} - Trouvez le mot mystère`;
-  hintEl.innerText = '';
-  hintEl.style.display = 'none';
+    const container = document.getElementById('scrambled-word');
+    const answerDisplay = document.getElementById('user-answer');
+    const titleEl = document.getElementById('wordGameTitle');
+    const hintEl = document.getElementById('wordGameHint');
+    const timerEl = document.getElementById('hintTimer');
 
-  timeRemaining = 10;
-  timerEl.style.display = 'inline-block';
-  timerEl.classList.remove('clickable');
-  timerEl.onclick = null;
-  document.getElementById('timerSeconds').innerText = timeRemaining;
+    titleEl.innerText = `Mot ${wordsCompleted + 1}/${WORDS_TO_WIN} - Trouvez le mot mystère`;
 
-  container.innerHTML = '';
-  answerDisplay.innerText = '';
-  currentGuess = "";
+    // Reset hint
+    hintEl.innerText = '';
+    hintEl.style.display = 'none';
 
-  let letters = currentWord.word.split('').sort(() => 0.5 - Math.random());
+    // IMPORTANT: on reconstruit le HTML du timer (sinon #timerSeconds n’existe plus après l’indice)
+    timeRemaining = 10;
+    timerEl.style.display = 'inline-block';
+    timerEl.classList.remove('clickable');
+    timerEl.onclick = null;
+    timerEl.innerHTML = `Indice dans <span id="timerSeconds">${timeRemaining}</span>s`;
 
-  letters.forEach(char => {
-    const btn = document.createElement('button');
-    btn.innerText = char;
-    btn.className = 'word-btn';
+    container.innerHTML = '';
+    answerDisplay.innerText = '';
+    currentGuess = "";
 
-    btn.onclick = function () {
-      currentGuess += char;
-      answerDisplay.innerText = currentGuess;
-      this.style.visibility = "hidden";
-    };
+    const letters = currentWord.word.split('').sort(() => 0.5 - Math.random());
 
-    container.appendChild(btn);
-  });
+    letters.forEach(char => {
+        const btn = document.createElement('button');
+        btn.innerText = char;
+        btn.className = 'word-btn';
 
-  startHintTimer();
+        btn.onclick = function () {
+            currentGuess += char;
+            answerDisplay.innerText = currentGuess;
+            this.style.visibility = "hidden";
+        };
+
+        container.appendChild(btn);
+    });
+
+    startHintTimer();
 }
+
 
 function startHintTimer() {
-  if (hintTimer) clearTimeout(hintTimer);
-  if (timerInterval) clearInterval(timerInterval);
+    if (hintTimer) clearTimeout(hintTimer);
+    if (timerInterval) clearInterval(timerInterval);
 
-  const timerSecondsEl = document.getElementById('timerSeconds');
-  const hintEl = document.getElementById('wordGameHint');
-  const timerEl = document.getElementById('hintTimer');
+    const hintEl = document.getElementById('wordGameHint');
+    const timerEl = document.getElementById('hintTimer');
 
-  timerInterval = setInterval(() => {
-    timeRemaining--;
-    timerSecondsEl.innerText = timeRemaining;
+    timerInterval = setInterval(() => {
+        timeRemaining--;
 
-    if (timeRemaining <= 0) {
-      clearInterval(timerInterval);
+        // On cherche le span dans le timer (il a été reconstruit dans initWordGame)
+        const timerSecondsEl = document.getElementById('timerSeconds');
+        if (timerSecondsEl) timerSecondsEl.innerText = timeRemaining;
 
-      timerEl.innerHTML = '💡 Cliquez pour un indice';
-      timerEl.classList.add('clickable');
-      timerEl.onclick = function () {
-        this.style.display = 'none';
-        hintEl.style.display = 'block';
-        hintEl.innerText = `💡 Indice : ${currentWord.hint}`;
-      };
-    }
-  }, 1000);
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+
+            timerEl.innerHTML = '💡 Cliquez pour un indice';
+            timerEl.classList.add('clickable');
+            timerEl.onclick = function () {
+                timerEl.style.display = 'none';
+                hintEl.style.display = 'block';
+                hintEl.innerText = `💡 Indice : ${currentWord.hint}`;
+            };
+        }
+    }, 1000);
 }
+
 
 function resetWord() {
   currentGuess = "";
