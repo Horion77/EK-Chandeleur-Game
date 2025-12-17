@@ -1,7 +1,7 @@
 /* === VARIABLES === */
 :root {
-    --primary: #C62828;
-    --primary-hover: #A52020;
+    --primary: #ff0000;           /* ← Rouge pur */
+    --primary-hover: #cc0000;      /* ← Rouge plus foncé */
     --bg-page: #1a1a1a;
     --bg-card: #FFFFFF;
     --text-main: #2D2D2D;

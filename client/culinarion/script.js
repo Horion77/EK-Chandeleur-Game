@@ -292,7 +292,8 @@ function initWordGame() {
     timerEl.style.display = 'inline-block';
     timerEl.classList.remove('clickable');
     timerEl.onclick = null;
-    timerEl.innerHTML = `Indice dans ${timeRemaining}s`;
+    timerEl.innerHTML = `Indice dans <span id="timerSeconds">${timeRemaining}</span>s`;
+
 
     container.innerHTML = '';
     answerDisplay.innerText = '';
@@ -550,67 +551,122 @@ const produitsParProfil = {
         { nom: "Spatule", url: "https://ambianceetstyles.com/articles/ltellier-spatule-a-crepes-en-hetre.18232", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FTELLI/NRC03-1/spatulr-crepe.jpg" }
     ]
 };
-
 /* === PROFIL & RENDU RÉSULTATS === */
 function computeFinalProfile() {
-    let maxScore = -Infinity;
-    let finalProfile = "creative";
+  let maxScore = -Infinity;
+  let finalProfile = "tradition";
 
-    for (const [profil, score] of Object.entries(scoreUtilisateur)) {
-        if (score > maxScore) {
-            maxScore = score;
-            finalProfile = profil;
-        }
+  for (const [profil, score] of Object.entries(scoreUtilisateur)) {
+    if (score > maxScore) {
+      maxScore = score;
+      finalProfile = profil;
     }
-    return finalProfile;
+  }
+  return finalProfile;
 }
 
 function renderResults(finalProfile) {
-    let titreProfil = "";
-    let descProfil = "";
+  let titreProfil = "";
+  let descProfil = "";
 
-    if (finalProfile === "precision") {
-        titreProfil = "🎯 Le/La maître de la pâte parfaite";
-        descProfil = "Scientifique et méthodique, vous maîtrisez chaque détail technique de la préparation des crêpes. Dosage précis, température contrôlée, repos de la pâte... rien n'est laissé au hasard.";
-    } else if (finalProfile === "sarrasin") {
-        titreProfil = "🥞 L'expert(e) du sarrasin";
-        descProfil = "Passionné(e) par la tradition bretonne, vous êtes un(e) puriste de la galette au sarrasin. Le bilig, le rozell et la cuisson parfaite n'ont plus de secrets pour vous.";
-    } else {
-        titreProfil = "✨ L'inventeur(se) de crêpes haute couture";
-        descProfil = "Chef créatif dans l'âme, vous transformez chaque crêpe en œuvre d'art culinaire. Associations audacieuses, dressage soigné, garnitures gastronomiques... votre cuisine est une signature.";
-    }
+  if (finalProfile === "rassemble") {
+    titreProfil = "🎯 Le/La maître de la pâte parfaite";
+    descProfil = "Scientifique et méthodique, vous maîtrisez chaque détail technique de la préparation des crêpes.";
+  }
+  else if (finalProfile === "duo") {
+    titreProfil = "🥞 L'expert(e) du sarrasin";
+    descProfil = "Passionné(e) par la tradition bretonne, vous êtes un(e) puriste de la galette au sarrasin.";
+  }
+  else {
+    titreProfil = "✨ L'inventeur(se) de crêpes haute couture";
+    descProfil = "Chef créatif dans l'âme, vous transformez chaque crêpe en œuvre d'art culinaire.";
+  }
 
-    document.getElementById('resultTitle').innerText = titreProfil;
-    document.getElementById('resultDescription').innerText = descProfil;
+  document.getElementById('resultTitle').innerText = titreProfil;
+  document.getElementById('resultDescription').innerText = descProfil;
 
-    const produitsContainer = document.getElementById('produitsContainer');
-    produitsContainer.innerHTML = '';
+  const produitsContainer = document.getElementById('produitsContainer');
+  produitsContainer.innerHTML = '<h3 style="margin-bottom: 18px; font-size: 1.15rem; color: var(--primary); font-family: Lora, serif;">🛍️ Vos produits recommandés</h3>';
 
-    const listeProduits = produitsParProfil[finalProfile] || [];
-    listeProduits.forEach((prod, idx) => {
-        const item = document.createElement('a');
-        item.className = 'produit-item';
-        item.href = prod.url;
-        item.target = '_blank';
-        item.dataset.index = idx;
+  const produits = produitsParProfil[finalProfile] || [];
 
-        item.innerHTML = `
-            <img src="${prod.image}" alt="${prod.nom}" class="produit-image">
-            <div class="produit-info">
-                <strong>${prod.nom}</strong>
-                <span class="produit-cta">Voir le produit →</span>
-            </div>
-        `;
+  produits.forEach(produit => {
+    const produitDiv = document.createElement('a');
+    produitDiv.className = 'produit-item';
+    produitDiv.href = produit.url;
+    produitDiv.target = '_blank';
+    produitDiv.innerHTML = `
+      <img src="${produit.image}" alt="${produit.nom}" class="produit-image">
+      <div class="produit-info">
+        <strong>${produit.nom}</strong>
+        <span class="produit-cta">Voir le produit →</span>
+      </div>
+    `;
 
-        item.addEventListener('click', (e) => {
-            if (!produitsCliques.includes(idx)) {
-                produitsCliques.push(idx);
-            }
-        });
-
-        produitsContainer.appendChild(item);
+    produitDiv.addEventListener('click', () => {
+      produitsCliques.push({
+        nom: produit.nom,
+        url: produit.url,
+        ts: new Date().toISOString()
+      });
     });
+
+    produitsContainer.appendChild(produitDiv);
+  });
 }
+
+/* === FORMULAIRE === */
+async function submitForm(e) {
+  e.preventDefault();
+
+  if (!window.API || typeof window.API.createParticipant !== 'function') {
+    showModal('⚠️', 'API non chargée', "Le fichier /shared/js/api.js n'est pas chargé.");
+    return;
+  }
+
+  const prenom = document.getElementById('prenom').value?.trim();
+  const nom = document.getElementById('nom').value?.trim();
+  const email = document.getElementById('email').value?.trim();
+
+  const magasin = document.getElementById('magasin')?.value?.trim();
+  if (!magasin) {
+    showModal('⚠️', 'Magasin manquant', 'Merci de sélectionner votre magasin.');
+    return;
+  }
+
+  const optInEl = document.getElementById('opt_in');
+  const opt_in = optInEl ? !!optInEl.checked : false;
+
+  const finalProfile = computeFinalProfile();
+  renderResults(finalProfile);
+
+  const enseigne = "culinarion";  // ← Forcément Culinarion
+
+  const payload = {
+    nom,
+    prenom,
+    email,
+    enseigne,
+    magasin,
+    profil: finalProfile,
+    session_id: getOrCreateSessionId(),
+    opt_in,
+    produits_cliques: produitsCliques,
+    level1_done: gameState.level1Done,
+    level2_done: gameState.level2Done,
+    level3_done: gameState.level3Done
+  };
+
+  try {
+    await window.API.createParticipant(payload);
+    showStep('step-5');
+    updateProgress(5);
+  } catch (err) {
+    console.error(err);
+    showModal('⚠️', 'Envoi impossible', 'Une erreur est survenue lors de l\'enregistrement.');
+  }
+}
+
 
 /* === SOUMISSION FORMULAIRE === */
 document.addEventListener('DOMContentLoaded', () => {

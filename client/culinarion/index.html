@@ -116,18 +116,66 @@
         <h2>Vos informations</h2>
         <p class="subtitle">Renseignez vos informations pour découvrir votre profil Chandeleur et participer au tirage au sort.</p>
 
-        <form id="finalForm" class="form-container">
+        <form id="finalForm" class="form-container" onsubmit="submitForm(event)">
             <input type="text" id="nom" class="input-field" placeholder="Nom *" required>
             <input type="text" id="prenom" class="input-field" placeholder="Prénom *" required>
             <input type="email" id="email" class="input-field" placeholder="Email *" required>
-            <select id="enseigne" class="input-field" required>
-                <option value="">Enseigne *</option>
-                <option value="Culinarion">Culinarion</option>
+            
+            <select id="magasin" class="input-field" required>
+                <option value="">Magasin *</option>
+                <option value="CANNES">CANNES</option>
+                <option value="NARBONNE">NARBONNE</option>
+                <option value="AIX EN PROVENCE">AIX EN PROVENCE</option>
+                <option value="CAEN">CAEN</option>
+                <option value="BOURGES">BOURGES</option>
+                <option value="DIJON">DIJON</option>
+                <option value="BESANCON">BESANCON</option>
+                <option value="CHARTRES">CHARTRES</option>
+                <option value="QUIMPER">QUIMPER</option>
+                <option value="BREST">BREST</option>
+                <option value="NIMES">NIMES</option>
+                <option value="BORDEAUX">BORDEAUX</option>
+                <option value="LIBOURNE">LIBOURNE</option>
+                <option value="BEZIERS">BEZIERS</option>
+                <option value="RENNES">RENNES</option>
+                <option value="TOURS">TOURS</option>
+                <option value="GRENOBLE">GRENOBLE</option>
+                <option value="SAINT ETIENNE">SAINT ETIENNE</option>
+                <option value="NANTES">NANTES</option>
+                <option value="SAINT NAZAIRE">SAINT NAZAIRE</option>
+                <option value="ORLEANS">ORLEANS</option>
+                <option value="ANGERS">ANGERS</option>
+                <option value="CHERBOURG">CHERBOURG</option>
+                <option value="VANNES">VANNES</option>
+                <option value="LORIENT">LORIENT</option>
+                <option value="COMPIEGNE">COMPIEGNE</option>
+                <option value="CLERMONT-FERRAND">CLERMONT-FERRAND</option>
+                <option value="PAU">PAU</option>
+                <option value="BAYONNE">BAYONNE</option>
+                <option value="PERPIGNAN">PERPIGNAN</option>
+                <option value="COLMAR">COLMAR</option>
+                <option value="MULHOUSE">MULHOUSE</option>
+                <option value="LYON">LYON</option>
+                <option value="VILLEURBANNE">VILLEURBANNE</option>
+                <option value="VILLEFRANCHE SUR SAONE">VILLEFRANCHE SUR SAONE</option>
+                <option value="CHAMBERY">CHAMBERY</option>
+                <option value="PARIS">PARIS</option>
+                <option value="ROUEN">ROUEN</option>
+                <option value="LE HAVRE">LE HAVRE</option>
+                <option value="FONTAINEBLEAU">FONTAINEBLEAU</option>
+                <option value="TOULON">TOULON</option>
+                <option value="AVIGNON">AVIGNON</option>
+                <option value="OLONNE-SUR-MER">OLONNE-SUR-MER</option>
+                <option value="LIMOGES">LIMOGES</option>
+                <option value="ISSY LES MOULINEAUX">ISSY LES MOULINEAUX</option>
+                <option value="NEUILLY SUR SEINE">NEUILLY SUR SEINE</option>
+                <option value="VINCENNES">VINCENNES</option>
+                <option value="LAMENTIN (Martinique)">LAMENTIN (Martinique)</option>
+                <option value="SAINT DENIS">SAINT DENIS</option>
             </select>
-            <input type="text" id="magasin" class="input-field" placeholder="Magasin *" required>
 
             <label class="checkbox-label">
-                <input type="checkbox" id="optin" class="checkbox-input">
+                <input type="checkbox" id="opt_in" class="checkbox-input">
                 J'accepte de recevoir des offres et actualités Culinarion
             </label>
 
@@ -151,15 +199,16 @@
 </div>
 
 <!-- MODAL -->
-<div id="customModal" class="modal-overlay">
+<div id="modalOverlay" class="modal-overlay">
     <div class="modal-box">
-        <div id="modalEmoji" class="modal-icon">🎉</div>
+        <div id="modalIcon" class="modal-icon">🎉</div>
         <h3 id="modalTitle" class="modal-title">Titre</h3>
         <p id="modalMessage" class="modal-message">Message</p>
-        <button id="modalBtn" class="btn-modal">OK</button>
+        <button class="btn-modal" onclick="closeModal()">OK</button>
     </div>
 </div>
 
+<script src="/shared/js/api.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
