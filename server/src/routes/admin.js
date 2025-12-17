@@ -67,10 +67,15 @@ router.post("/login", async (req, res) => {
      * JWT simple (24h)
      */
     const token = jwt.sign(
-      { adminId: admin.id, email: admin.username },
-      process.env.JWT_SECRET || "dev_secret_change_me",
-      { expiresIn: "24h" }
-    );
+  { 
+    adminId: admin.id, 
+    email: admin.username,
+    role: 'admin'  // ✅ Ajoute cette ligne
+  },
+  process.env.JWT_SECRET || "dev_secret_change_me",
+  { expiresIn: "24h" }
+);
+
 
     res.json({
       token,
