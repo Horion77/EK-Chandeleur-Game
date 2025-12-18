@@ -108,12 +108,12 @@ function setAuthUi() {
   if (authStatusPill) {
     if (isAuthed()) {
       authStatusPill.textContent = "Connecté";
-      authStatusPill.style.borderColor = "rgba(79,156,255,.35)";
-      authStatusPill.style.color = "rgba(232,238,251,.85)";
+      authStatusPill.style.borderColor = "rgba(230, 57, 70,.40)";
+      authStatusPill.style.color = "rgba(245,245,245,.85)";
     } else {
       authStatusPill.textContent = "Non connecté";
       authStatusPill.style.borderColor = "rgba(255,255,255,.08)";
-      authStatusPill.style.color = "rgba(232,238,251,.65)";
+      authStatusPill.style.color = "rgba(245,245,245,.65)";
     }
   }
 
@@ -236,57 +236,34 @@ async function resolveParticipantsEndpoint() {
 }
 
 async function loadParticipants() {
-  try {
-    const searchQuery = document.getElementById('searchInput').value.trim();
-    const enseigneFilter = document.getElementById('enseigneFilter').value;
-    const optinFilter = document.getElementById('optinFilter').value;
+  if (!tbody) return;
 
-    const params = new URLSearchParams({
-      page: currentPage,
-      limit: pageSize,
-      ...(searchQuery && { q: searchQuery }),
-      ...(enseigneFilter && { enseigne: enseigneFilter }),
-      ...(optinFilter && { optin: optinFilter })
-    });
+  tbody.innerHTML = `<tr><td colspan="7" class="muted">Chargement…</td></tr>`;
 
-    const response = await fetch(`/api/participants?${params}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+  const endpoint = await resolveParticipantsEndpoint();
+  const [sortField, sortDir] = (sortSelect?.value || "created_at:desc").split(":");
 
-    if (!response.ok) throw new Error('Erreur lors du chargement');
+  const query = buildQuery({
+    page: state.page,
+    limit: ADMIN_APP.PAGE_SIZE,
+    q: searchInput?.value?.trim() || "",
+    enseigne: enseigneSelect?.value || "",
+    optin: optinSelect?.value || "",
+    sort: sortField,
+    dir: sortDir
+  });
 
-    const data = await response.json();
-    totalItems = data.total;
+  const data = await apiFetch(`${endpoint}?${query}`);
+  const { rows, total } = parseRowsAndTotal(data);
 
-    // === MISE À JOUR DES STATS ===
-    document.getElementById('totalCount').textContent = data.total;
-    
-    // Compter A&S et Culinarion
-    const statsAS = await fetch(`/api/participants?enseigne=ambiance-styles&limit=1`, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).then(r => r.json());
-    
-    const statsCuli = await fetch(`/api/participants?enseigne=culinarion&limit=1`, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).then(r => r.json());
-    
-    const statsOptin = await fetch(`/api/participants?optin=true&limit=1`, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).then(r => r.json());
+  state.rows = rows;
+  state.total = total;
+  state.selected.clear();
+  if (selectAll) selectAll.checked = false;
+  if (deleteSelectedBtn) deleteSelectedBtn.disabled = true;
 
-    document.getElementById('totalAS').textContent = statsAS.total || 0;
-    document.getElementById('totalCulinarion').textContent = statsCuli.total || 0;
-    document.getElementById('totalOptin').textContent = statsOptin.total || 0;
-
-    renderTable(data.rows);
-    updatePagination();
-
-  } catch (error) {
-    console.error('Erreur:', error);
-    alert('Impossible de charger les participants');
-  }
+  renderParticipants();
 }
-
 
 function renderParticipants() {
   const rows = state.rows || [];
@@ -371,7 +348,7 @@ async function handleLogin(e) {
     setToken(token);
     state.page = 1;
 
-    // IMPORTANT : on ne reset PAS le token au refresh, et on ne “déconnecte” pas sur une erreur 404
+    // IMPORTANT : on ne reset PAS le token au refresh, et on ne "déconnecte" pas sur une erreur 404
     setAuthUi();
     toastMsg("Connecté");
 
