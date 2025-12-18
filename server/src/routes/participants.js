@@ -34,37 +34,61 @@ router.post('/', async (req, res) => {
       magasin,
       profil,
       session_id,
-      score_total,
-      details_answers,
       opt_in,
-      ip_address,
-      user_agent
+      produits_cliques,
+      level1_done,
+      level2_done,
+      level3_done
     } = req.body;
 
     if (!nom || !prenom || !email || !enseigne || !magasin) {
       return res.status(400).json({ error: "Champs obligatoires manquants." });
     }
 
-    // insert dans la table participants
+    // Validation enseigne
+    if (!['ambiance-styles', 'culinarion'].includes(enseigne)) {
+      return res.status(400).json({ error: "Enseigne invalide." });
+    }
+
+    // Validation profil (optionnel)
+    const validProfils = ['rassemble', 'duo', 'tradition', 'precision', 'sarrasin', 'creative'];
+    if (profil && !validProfils.includes(profil)) {
+      return res.status(400).json({ error: "Profil invalide." });
+    }
+
+    // Insert dans la table participants
     const query = `
       INSERT INTO participants
-      (nom, prenom, email, enseigne, magasin, profil, session_id, score_total, details_answers, opt_in, ip_address, user_agent)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+      (nom, prenom, email, enseigne, magasin, profil, session_id, opt_in, produits_cliques, level1_done, level2_done, level3_done)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+      ON CONFLICT (email, enseigne) 
+      DO UPDATE SET 
+        nom = EXCLUDED.nom,
+        prenom = EXCLUDED.prenom,
+        magasin = EXCLUDED.magasin,
+        profil = EXCLUDED.profil,
+        opt_in = EXCLUDED.opt_in,
+        produits_cliques = EXCLUDED.produits_cliques,
+        level1_done = EXCLUDED.level1_done,
+        level2_done = EXCLUDED.level2_done,
+        level3_done = EXCLUDED.level3_done,
+        updated_at = NOW()
       RETURNING id
     `;
+
     const values = [
       nom,
       prenom,
       email,
       enseigne,
       magasin,
-      profil,
+      profil || null,
       session_id,
-      score_total,
-      details_answers,
-      opt_in,
-      ip_address,
-      user_agent
+      opt_in || false,
+      JSON.stringify(produits_cliques || []),
+      level1_done || false,
+      level2_done || false,
+      level3_done || false
     ];
 
     const result = await pool.query(query, values);
@@ -73,6 +97,7 @@ router.post('/', async (req, res) => {
       success: true,
       participant_id: result.rows[0].id
     });
+
   } catch (error) {
     console.error("Erreur inscription participant:", error);
     res.status(500).json({ error: "Erreur serveur" });
@@ -84,7 +109,6 @@ router.post('/', async (req, res) => {
 // GET /api/participants?page=&limit=&q=&enseigne=&optin=&sort=&dir=
 // DELETE /api/participants/:id
 // -----------------------------------------------------------------------------
-
 router.get('/', requireAdmin, async (req, res) => {
   try {
     const page = Math.max(parseInt(req.query.page || '1', 10), 1);
@@ -94,7 +118,6 @@ router.get('/', requireAdmin, async (req, res) => {
     const q = (req.query.q || '').trim();
     const enseigne = (req.query.enseigne || '').trim();
     const optinRaw = (req.query.optin ?? '').toString().trim();
-
     const sortRaw = (req.query.sort || 'created_at').toString();
     const dirRaw = (req.query.dir || 'desc').toString().toLowerCase() === 'asc' ? 'ASC' : 'DESC';
 
@@ -149,6 +172,7 @@ router.get('/', requireAdmin, async (req, res) => {
     );
 
     res.json({ rows: rowsRes.rows, total });
+
   } catch (error) {
     console.error('Erreur GET /api/participants (admin):', error);
     res.status(500).json({ error: 'Erreur serveur' });
@@ -164,6 +188,7 @@ router.delete('/:id', requireAdmin, async (req, res) => {
     if (!del.rows.length) return res.status(404).json({ error: 'Introuvable' });
 
     res.json({ ok: true, id: del.rows[0].id });
+
   } catch (error) {
     console.error('Erreur DELETE /api/participants/:id (admin):', error);
     res.status(500).json({ error: 'Erreur serveur' });
