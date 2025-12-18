@@ -1,176 +1,135 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin — Chandeleur</title>
-  <link rel="stylesheet" href="admin.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Grand Jeu Chandeleur</title>
+  <link rel="stylesheet" href="admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="brand-badge">&</div>
-        <div class="brand-title">Admin</div>
+  <div class="admin-container">
+    
+    <!-- HEADER -->
+    <div class="admin-header">
+      <h1>🎯 Admin - Grand Jeu Chandeleur</h1>
+      <p class="subtitle">Accès réservé admin (token stocké en local).</p>
+      <button class="logout-btn" onclick="logout()">🚪 Déconnexion</button>
+    </div>
+
+    <!-- SECTION CONNEXION -->
+    <div id="loginSection" class="section">
+      <h2>Connexion</h2>
+      <form onsubmit="login(event)">
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px;">Identifiant</label>
+          <input type="text" id="username" required style="width: 100%; padding: 10px; border-radius: 8px; border: 2px solid var(--admin-border); background: var(--admin-dark); color: var(--admin-light);">
+        </div>
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; margin-bottom: 5px;">Mot de passe</label>
+          <input type="password" id="password" required style="width: 100%; padding: 10px; border-radius: 8px; border: 2px solid var(--admin-border); background: var(--admin-dark); color: var(--admin-light);">
+        </div>
+        <button type="submit" class="btn">Se connecter</button>
+      </form>
+    </div>
+
+    <!-- SECTION INSCRITS -->
+    <div id="participantsSection" class="section" style="display: none;">
+      <h2>Inscrits</h2>
+      <p>Liste des participants enregistrés.</p>
+
+      <div style="margin: 20px 0;">
+        <button class="btn" onclick="exportCSV()">Exporter CSV</button>
+        <button class="btn btn-secondary" onclick="deleteSelected()">Supprimer sélection</button>
       </div>
 
-      <nav class="nav">
-        <button class="nav-item active" data-view="inscrits">Inscrits</button>
-        <button class="nav-item" data-view="stats">Stats</button>
-        <button class="nav-item" data-view="tests">Tests</button>
-      </nav>
-
-      <div class="sidebar-footer">
-        <div class="env">
-          <div class="env-label">Backend</div>
-          <div class="env-value" id="apiBaseUrlLabel">—</div>
-        </div>
-
-        <button class="btn btn-ghost" id="logoutBtn">Se déconnecter</button>
+      <!-- FILTRES -->
+      <div class="filters">
+        <input type="text" id="searchField" placeholder="Rechercher (nom, prénom, email, magasin...)" style="flex: 1; min-width: 250px;">
+        
+        <select id="enseigneField">
+          <option value="">Toutes enseignes</option>
+          <option value="ambiance-styles">Ambiance & Styles</option>
+          <option value="culinarion">Culinarion</option>
+        </select>
+        
+        <select id="optinField">
+          <option value="">Opt-in (tous)</option>
+          <option value="true">Opt-in uniquement</option>
+          <option value="false">Sans opt-in</option>
+        </select>
+        
+        <select id="sortField">
+          <option value="created_at">Date (récent → ancien)</option>
+          <option value="nom">Nom</option>
+          <option value="email">Email</option>
+        </select>
       </div>
-    </aside>
 
-    <main class="main">
-      <header class="topbar">
-        <div>
-          <div class="crumb">Admin / <span id="crumbView">Inscrits</span></div>
-          <h1 class="page-title" id="pageTitle">Inscrits</h1>
-        </div>
+      <!-- TABLE -->
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"></th>
+              <th>DATE</th>
+              <th>NOM</th>
+              <th>PRÉNOM</th>
+              <th>EMAIL</th>
+              <th>ENSEIGNE</th>
+              <th>OPT-IN</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
 
-        <div class="topbar-actions">
-          <span class="pill" id="authStatusPill">Non connecté</span>
-          <button class="btn" id="refreshBtn">Rafraîchir</button>
-        </div>
-      </header>
+      <!-- PAGINATION -->
+      <div class="pagination">
+        <button id="prevBtn" onclick="goToPrevPage()">◀ Précédent</button>
+        <span id="pageIndicator">Page 1</span>
+        <button id="nextBtn" onclick="goToNextPage()">Suivant ▶</button>
+      </div>
+    </div>
 
-      <!-- LOGIN -->
-      <section class="card" id="loginCard">
-        <div class="card-header">
-          <h2>Connexion</h2>
-          <p class="muted">Accès réservé admin (token stocké en local).</p>
-        </div>
+    <!-- SECTION STATS -->
+    <div id="statsSection" class="section" style="display: none;">
+      <h2>Stats</h2>
+      <p>À brancher ensuite.</p>
+      <p>À venir.</p>
+    </div>
 
-        <form class="form" id="loginForm">
-          <label class="field">
-            <span>Identifiant</span>
-            <input type="text" id="loginEmail" placeholder="admin@ekfrance.fr" required />
-          </label>
+    <!-- SECTION TESTS -->
+    <div id="testsSection" class="section" style="display: none;">
+      <h2>Tests</h2>
+      <p>Accès rapide aux écrans du jeu pour tester/débugger.</p>
 
-          <label class="field">
-            <span>Mot de passe</span>
-            <input type="password" id="loginPassword" placeholder="••••••••" required />
-          </label>
+      <div style="margin-top: 20px;">
+        <h3>🏪 Ambiance & Styles</h3>
+        <a class="btn" href="/ambiance-styles/?goto=menu" target="_blank">Ouvrir le jeu (menu)</a>
+        <a class="btn" href="/ambiance-styles/?goto=level1" target="_blank">Jeu 1 (Memory)</a>
+        <a class="btn" href="/ambiance-styles/?goto=level2" target="_blank">Jeu 2 (Mots)</a>
+        <a class="btn" href="/ambiance-styles/?goto=level3" target="_blank">Jeu 3 (Quiz)</a>
+        <a class="btn btn-secondary" href="/ambiance-styles/?goto=all_done_form" target="_blank">Formulaire</a>
+      </div>
 
-          <div class="row">
-            <button class="btn btn-primary" type="submit">Se connecter</button>
-            <span class="muted" id="loginMsg"></span>
-          </div>
-        </form>
-      </section>
+      <div style="margin-top: 20px;">
+        <h3>🍴 Culinarion</h3>
+        <a class="btn" href="/culinarion/?goto=menu" target="_blank">Ouvrir le jeu (menu)</a>
+        <a class="btn" href="/culinarion/?goto=level1" target="_blank">Jeu 1 (Memory)</a>
+        <a class="btn" href="/culinarion/?goto=level2" target="_blank">Jeu 2 (Mots)</a>
+        <a class="btn" href="/culinarion/?goto=level3" target="_blank">Jeu 3 (Quiz)</a>
+        <a class="btn btn-secondary" href="/culinarion/?goto=all_done_form" target="_blank">Formulaire</a>
+      </div>
 
-      <!-- INSCRITS -->
-      <section class="card hidden" id="inscritsCard">
-        <div class="card-header row-between">
-          <div>
-            <h2>Inscrits</h2>
-            <p class="muted">Liste des participants enregistrés.</p>
-          </div>
-          <div class="row">
-            <button class="btn btn-ghost" id="exportCsvBtn">Exporter CSV</button>
-            <button class="btn btn-danger" id="deleteSelectedBtn" disabled>Supprimer sélection</button>
-          </div>
-        </div>
+      <p style="margin-top: 20px; color: var(--admin-gray); font-size: 0.9rem;">
+        <strong>Note :</strong> pour que ces liens ouvrent directement les bons écrans, il faut ajouter un mini "routeur" dans 
+        <code>ambiance-styles/script.js</code> (je te donne le snippet juste après).
+      </p>
+    </div>
 
-        <div class="toolbar">
-          <div class="search">
-            <input id="searchInput" placeholder="Rechercher (nom, prénom, email…)" />
-          </div>
-
-          <div class="filters">
-            <select id="enseigneSelect">
-              <option value="">Toutes enseignes</option>
-              <option value="ambiance-styles">Ambiance & Styles</option>
-              <option value="culinarion">Culinarion</option>
-            </select>
-
-            <select id="optinSelect">
-              <option value="">Opt-in (tous)</option>
-              <option value="true">Opt-in = oui</option>
-              <option value="false">Opt-in = non</option>
-            </select>
-
-            <select id="sortSelect">
-              <option value="created_at:desc">Date (récent → ancien)</option>
-              <option value="created_at:asc">Date (ancien → récent)</option>
-              <option value="nom:asc">Nom (A→Z)</option>
-              <option value="nom:desc">Nom (Z→A)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="table-wrap">
-          <table class="table">
-            <thead>
-              <tr>
-                <th class="col-check"><input type="checkbox" id="selectAll" /></th>
-                <th>Date</th>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Email</th>
-                <th>Enseigne</th>
-                <th>Opt-in</th>
-              </tr>
-            </thead>
-            <tbody id="participantsTbody">
-              <tr><td colspan="7" class="muted">Chargement…</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="footerbar">
-          <div class="muted" id="countLabel">0 inscrit</div>
-          <div class="pager">
-            <button class="btn btn-ghost" id="prevPageBtn">Précédent</button>
-            <div class="muted" id="pageLabel">Page 1</div>
-            <button class="btn btn-ghost" id="nextPageBtn">Suivant</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- STATS -->
-      <section class="card hidden" id="statsCard">
-        <div class="card-header">
-          <h2>Stats</h2>
-          <p class="muted">À brancher ensuite.</p>
-        </div>
-        <div class="muted">À venir.</div>
-      </section>
-
-      <!-- TESTS -->
-      <section class="card hidden" id="testsCard">
-        <div class="card-header">
-          <h2>Tests</h2>
-          <p class="muted">Accès rapide aux écrans du jeu pour tester/débugger.</p>
-        </div>
-
-        <div class="row" style="flex-wrap:wrap; gap:10px; padding:6px;">
-          <a class="btn" href="/ambiance-styles/" target="_blank" rel="noopener">Ouvrir le jeu (menu)</a>
-          <a class="btn" href="/ambiance-styles/?admin_test=memory" target="_blank" rel="noopener">Jeu 1 (Memory)</a>
-          <a class="btn" href="/ambiance-styles/?admin_test=word" target="_blank" rel="noopener">Jeu 2 (Mots)</a>
-          <a class="btn" href="/ambiance-styles/?admin_test=quiz" target="_blank" rel="noopener">Jeu 3 (Quiz)</a>
-          <a class="btn" href="/ambiance-styles/?admin_test=form" target="_blank" rel="noopener">Formulaire</a>
-          <a class="btn" href="/culinarion/?admin_test=memory" target="_blank" rel="noopener">Ouvrir le memory Culinarion</a>
-        </div>
-
-        <p class="muted" style="padding:6px; margin-top:6px;">
-          Note : pour que ces liens ouvrent directement les bons écrans, il faut ajouter un mini “routeur” dans
-          <code>ambiance-styles/script.js</code> (je te donne le snippet juste après).
-        </p>
-      </section>
-
-      <div class="toast" id="toast"></div>
-    </main>
   </div>
 
   <script src="admin.js"></script>
