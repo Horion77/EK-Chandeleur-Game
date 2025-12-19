@@ -57,24 +57,27 @@ router.post('/', async (req, res) => {
     }
 
     // Insert dans la table participants
-    const query = `
-      INSERT INTO participants
-      (nom, prenom, email, enseigne, magasin, profil, session_id, opt_in, produits_cliques, level1_done, level2_done, level3_done)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-      ON CONFLICT (email, enseigne) 
-      DO UPDATE SET 
-        nom = EXCLUDED.nom,
-        prenom = EXCLUDED.prenom,
-        magasin = EXCLUDED.magasin,
-        profil = EXCLUDED.profil,
-        opt_in = EXCLUDED.opt_in,
-        produits_cliques = EXCLUDED.produits_cliques,
-        level1_done = EXCLUDED.level1_done,
-        level2_done = EXCLUDED.level2_done,
-        level3_done = EXCLUDED.level3_done,
-        updated_at = NOW()
-      RETURNING id
-    `;
+   const query = `
+  INSERT INTO participants
+  (nom, prenom, email, enseigne, magasin, profil, session_id, opt_in, produits_cliques, level1_done, level2_done, level3_done)
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+  ON CONFLICT (email, enseigne)
+  DO UPDATE SET
+    nom = EXCLUDED.nom,
+    prenom = EXCLUDED.prenom,
+    magasin = EXCLUDED.magasin,
+    profil = EXCLUDED.profil,
+    session_id = EXCLUDED.session_id,
+    opt_in = EXCLUDED.opt_in,
+    produits_cliques = EXCLUDED.produits_cliques,
+    level1_done = EXCLUDED.level1_done,
+    level2_done = EXCLUDED.level2_done,
+    level3_done = EXCLUDED.level3_done,
+    updated_at = NOW()
+  RETURNING id
+`;
+
+
 
     const values = [
       nom,
