@@ -381,28 +381,46 @@ function checkWord() {
 
 /* === JEU 3 : QUIZ AVEC IMAGES === */
 const questionsData = [
+    {
+  id: 1,
+  type: "profile",
+  question: "Vous vous inspirez plutôt...",
+  image: "https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=600&h=400&fit=crop",
+  reponses: [
+    { 
+      texte: "Des recettes de chefs et tutoriels YouTube détaillés", 
+      points: { precision: 1, sarrasin: 0, creative: 2 } 
+    },
+    { 
+      texte: "Du carnet de recettes familial ou des souvenirs d'enfance", 
+      points: { precision: 0, sarrasin: 2, creative: 0 } 
+    },
+    { 
+      texte: "De Pinterest, Instagram et des nouvelles tendances culinaires", 
+      points: { precision: 0, sarrasin: 0, creative: 2 } 
+    }
+  ]
+},
   {
-    id: 1,
-    type: "profile",
-    question: "Ce soir c'est Chandeleur ! Autour de la table, il y a...",
-    image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=600&h=400&fit=crop",
-    reponses: [
-      { texte: "Toute la tribu, les voisins... plus on est de fous, plus on rit !", points: { precision: 0, sarrasin: 0, creative: 2 } },
-      { texte: "Juste ma moitié ou mon meilleur ami, pour une soirée détendue.", points: { precision: 2, sarrasin: 0, creative: 0 } },
-      { texte: "La famille proche, comme quand j'étais petit(e).", points: { precision: 0, sarrasin: 2, creative: 0 } }
-    ]
-  },
-  {
-    id: 2,
-    type: "profile",
-    question: "Niveau garniture, votre crêpe idéale ressemble à quoi ?",
-    image: "https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=600&h=400&fit=crop",
-    reponses: [
-      { texte: "Une montagne ! Chantilly, chocolat... je ne vois plus la crêpe.", points: { precision: 0, sarrasin: 0, creative: 2 } },
-      { texte: "Créative et Chic : J'adore les associations salées-sucrées.", points: { precision: 0, sarrasin: 0, creative: 2 } },
-      { texte: "La Classique : Beurre-sucre et un filet de citron.", points: { precision: 0, sarrasin: 2, creative: 0 } }
-    ]
-  },
+  id: 11,
+  type: "profile",
+  question: "Face à une recette classique de crêpes, vous avez tendance à…",
+  image: "images/IMAGE_RECETTE_CREPE.png",
+  reponses: [
+    { 
+      texte: "L’optimiser subtilement pour un résultat irréprochable", 
+      points: { precision: 2, sarrasin: 0, creative: 0 } 
+    },
+    { 
+      texte: "La suivre à la lettre, sans compromis", 
+      points: { precision: 0, sarrasin: 2, creative: 0 } 
+    },
+    { 
+      texte: "La considérer comme un point de départ créatif", 
+      points: { precision: 0, sarrasin: 0, creative: 2 } 
+    }
+  ]
+},
   {
     id: 3,
     type: "trivia",
