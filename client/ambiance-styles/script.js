@@ -592,7 +592,7 @@ function renderResults(finalProfile) {
     descProfil = "Moderne et fun, vous aimez les soirées détendues où chacun met la main à la pâte.";
   }
   else {
-    titreProfil = "👵 La Tradition qui fait du Bien";
+    titreProfil = "🏡 Gardien(ne) de la Tradition";
     descProfil = "Les recettes de grand-mère et le bon goût du beurre, c'est ça la vraie Chandeleur pour vous.";
   }
 

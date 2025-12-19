@@ -567,7 +567,7 @@ function renderResults(finalProfile) {
   let descProfil = "";
 
   if (finalProfile === "precision") {
-    titreProfil = "🎯 Le/La maître de la pâte parfaite";
+    titreProfil = "🎯 Maître·sse de la pâte parfaite";
     descProfil = "Scientifique et méthodique, vous maîtrisez chaque détail technique de la préparation des crêpes.";
   }
   else if (finalProfile === "sarrasin") {
