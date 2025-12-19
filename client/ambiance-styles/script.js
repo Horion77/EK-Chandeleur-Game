@@ -584,7 +584,7 @@ function renderResults(finalProfile) {
   let descProfil = "";
 
   if (finalProfile === "rassemble") {
-    titreProfil = "🎉 La Crêpière qui Rassemble";
+    titreProfil = "🎉 La Crêpière/Le Crêpier qui Rassemble";
     descProfil = "Pour vous, la Chandeleur c'est sacré : toute la tribu est là ! Vous aimez l'abondance et la convivialité.";
   }
   else if (finalProfile === "duo") {

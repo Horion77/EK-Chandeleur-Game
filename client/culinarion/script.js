@@ -422,7 +422,7 @@ const questionsData = [
     reponses: [
       { texte: "Un peu de bière ou de cidre.", points: { precision: 0, sarrasin: 2, creative: 0 } },
       { texte: "De la vanille ou fève tonka.", points: { precision: 0, sarrasin: 0, creative: 2 } },
-      { texte: "Le bouchon de Rhum ou Fleur d'oranger.", points: { precision: 0, sarrasin: 2, creative: 0 } }
+      { texte: "Le bouchon de Rhum ou Fleur d'oranger.", points: { precision: 2, sarrasin: 0, creative: 0 } }
     ]
   },
   {
@@ -571,11 +571,11 @@ function renderResults(finalProfile) {
     descProfil = "Scientifique et méthodique, vous maîtrisez chaque détail technique de la préparation des crêpes.";
   }
   else if (finalProfile === "sarrasin") {
-    titreProfil = "🥞 L'expert(e) du sarrasin";
-    descProfil = "Passionné(e) par la tradition bretonne, vous êtes un(e) puriste de la galette au sarrasin.";
+    titreProfil = "🥞 🌾 Spécialiste de la Tradition Bretonne";
+    descProfil = "Passionné(e) de recettes authentiques, vous êtes gardien(ne) du savoir-faire ancestral des crêpes.";
   }
   else {
-    titreProfil = "✨ L'inventeur(se) de crêpes haute couture";
+    titreProfil = "✨ L'Architecte de crêpes haute couture";
     descProfil = "Chef créatif dans l'âme, vous transformez chaque crêpe en œuvre d'art culinaire.";
   }
 
