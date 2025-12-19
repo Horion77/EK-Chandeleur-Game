@@ -1,5 +1,4 @@
 const ADMIN_APP = {
-  // /admin et l'API étant servis par le même serveur Railway, le plus robuste = origin courant
   API_BASE_URL: window.location.origin,
 
   ENDPOINTS: {
@@ -7,15 +6,13 @@ const ADMIN_APP = {
       "/api/admin/login",
       "/api/auth/admin",
       "/api/auth/login",
-      "/admin/login" // au cas où
+      "/admin/login"
     ],
 
-    // IMPORTANT : on teste avec et sans /api
     participantsCandidates: [
       "/api/participants",
       "/api/participants/list",
       "/api/participants/admin",
-
       "/participants",
       "/participants/list",
       "/participants/admin"
@@ -48,7 +45,7 @@ const logoutBtn = $("logoutBtn");
 
 const inscritsCard = $("inscritsCard");
 const statsCard = $("statsCard");
-const testsCard = $("testsCard"); // si tu l'as dans ton HTML (sinon laisse, ça n'empêche pas)
+const testsCard = $("testsCard");
 
 const pageTitle = $("pageTitle");
 const crumbView = $("crumbView");
@@ -200,21 +197,17 @@ async function resolveParticipantsEndpoint() {
 
   for (const ep of ADMIN_APP.ENDPOINTS.participantsCandidates) {
     try {
-      // On teste une URL "réaliste"
       await apiFetch(`${ep}?${testQuery}`);
       state.participantsEndpoint = ep;
 
-      // delete correspondant (même préfixe)
       state.deleteEndpointFactory = ep.startsWith("/api/")
         ? ADMIN_APP.ENDPOINTS.deleteParticipantCandidates[0]
         : ADMIN_APP.ENDPOINTS.deleteParticipantCandidates[1];
 
       return ep;
     } catch (e) {
-      // 404 -> on continue à tester
       if (e.status === 404) continue;
 
-      // 401/403 -> endpoint existe probablement mais token requis : on le garde
       if (e.status === 401 || e.status === 403) {
         state.participantsEndpoint = ep;
         state.deleteEndpointFactory = ep.startsWith("/api/")
@@ -223,12 +216,10 @@ async function resolveParticipantsEndpoint() {
         return ep;
       }
 
-      // autres erreurs : on continue
       continue;
     }
   }
 
-  // Aucun endpoint trouvé => on affiche un message clair
   throw new Error(
     "Aucune route 'participants' trouvée côté serveur (GET /api/participants ou /participants). " +
     "Il faut ajouter la route de listing dans le backend."
@@ -238,7 +229,7 @@ async function resolveParticipantsEndpoint() {
 async function loadParticipants() {
   if (!tbody) return;
 
-  tbody.innerHTML = `<tr><td colspan="7" class="muted">Chargement…</td></tr>`;
+  tbody.innerHTML = `<tr><td colspan="9" class="muted">Chargement…</td></tr>`;
 
   const endpoint = await resolveParticipantsEndpoint();
   const [sortField, sortDir] = (sortSelect?.value || "created_at:desc").split(":");
@@ -269,7 +260,7 @@ function renderParticipants() {
   const rows = state.rows || [];
 
   if (!rows.length) {
-    tbody.innerHTML = `<tr><td colspan="7" class="muted">Aucun résultat.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" class="muted">Aucun résultat.</td></tr>`;
     if (countLabel) countLabel.textContent = "0 inscrit";
     if (pageLabel) pageLabel.textContent = `Page ${state.page}`;
     return;
@@ -282,6 +273,8 @@ function renderParticipants() {
     const prenom = p.prenom ?? p.first_name ?? "";
     const email = p.email ?? "";
     const enseigne = p.enseigne ?? "";
+    const magasin = p.magasin ?? "";
+    const profil = p.profil ?? "—";
     const optin = (p.opt_in ?? p.optin ?? p.marketing_optin);
     const optinTxt = (optin === true || optin === "true") ? "oui" : "non";
 
@@ -295,6 +288,8 @@ function renderParticipants() {
         <td>${escapeHtml(prenom)}</td>
         <td>${escapeHtml(email)}</td>
         <td>${escapeHtml(enseigne)}</td>
+        <td>${escapeHtml(magasin)}</td>
+        <td>${escapeHtml(profil)}</td>
         <td>${escapeHtml(optinTxt)}</td>
       </tr>
     `;
@@ -348,7 +343,6 @@ async function handleLogin(e) {
     setToken(token);
     state.page = 1;
 
-    // IMPORTANT : on ne reset PAS le token au refresh, et on ne "déconnecte" pas sur une erreur 404
     setAuthUi();
     toastMsg("Connecté");
 
@@ -360,18 +354,21 @@ async function handleLogin(e) {
 }
 
 async function exportCsv() {
-  const headers = ["date", "nom", "prenom", "email", "enseigne", "opt_in"];
+  // Export en colonnes (chaque colonne sur sa ligne verticale dans le CSV)
+  const headers = ["Date", "Nom", "Prénom", "Email", "Enseigne", "Magasin", "Profil", "Opt-in"];
   const lines = [headers.join(",")];
 
   (state.rows || []).forEach((p) => {
-    const created = p.created_at ?? p.createdAt ?? p.date ?? "";
+    const created = formatDate(p.created_at ?? p.createdAt ?? p.date ?? "");
     const nom = (p.nom ?? p.last_name ?? "");
     const prenom = (p.prenom ?? p.first_name ?? "");
     const email = (p.email ?? "");
     const enseigne = (p.enseigne ?? "");
-    const optin = (p.opt_in ?? p.optin ?? p.marketing_optin) ? "true" : "false";
+    const magasin = (p.magasin ?? "");
+    const profil = (p.profil ?? "");
+    const optin = (p.opt_in ?? p.optin ?? p.marketing_optin) ? "oui" : "non";
 
-    const row = [formatDate(created), nom, prenom, email, enseigne, optin]
+    const row = [created, nom, prenom, email, enseigne, magasin, profil, optin]
       .map((v) => `"${String(v).replaceAll('"', '""')}"`)
       .join(",");
     lines.push(row);
@@ -380,9 +377,11 @@ async function exportCsv() {
   const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = `inscrits_page-${state.page}.csv`;
+  a.download = `inscrits_page-${state.page}_${new Date().toISOString().split('T')[0]}.csv`;
   a.click();
   URL.revokeObjectURL(a.href);
+  
+  toastMsg("Export CSV réussi !");
 }
 
 async function deleteSelected() {
@@ -443,7 +442,7 @@ function wireEvents() {
     if (!isAuthed()) return toastMsg("Connecte-toi d'abord");
     try {
       await loadParticipants();
-      toastMsg("OK");
+      toastMsg("Données rafraîchies !");
     } catch (e) {
       if (e.status === 401 || e.status === 403) {
         clearToken();
@@ -502,7 +501,6 @@ function wireEvents() {
   wireEvents();
   setView("inscrits");
 
-  // Si déjà connecté, on charge sans déconnecter sur une simple 404
   if (isAuthed()) {
     try {
       await loadParticipants();
