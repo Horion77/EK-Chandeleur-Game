@@ -402,21 +402,22 @@ const questionsData = [
   ]
 },
   {
-  id: 11,
+  id: 2,
   type: "profile",
-  question: "Face à une recette classique de crêpes, vous avez tendance à…",
-  image: "images/IMAGE_RECETTE_CREPE.png",
+  question: "Votre plus grand plaisir lorsque vous cuisinez des crêpes est…",
+  image: "images/IMAGE_SEPARE-EN_3.png",
+
   reponses: [
     { 
-      texte: "L’optimiser subtilement pour un résultat irréprochable", 
+      texte: "D’atteindre une régularité parfaite, crêpe après crêpe", 
       points: { precision: 2, sarrasin: 0, creative: 0 } 
     },
     { 
-      texte: "La suivre à la lettre, sans compromis", 
+      texte: "De perpétuer un goût et un geste intemporels", 
       points: { precision: 0, sarrasin: 2, creative: 0 } 
     },
     { 
-      texte: "La considérer comme un point de départ créatif", 
+      texte: "De surprendre avec une création inattendue", 
       points: { precision: 0, sarrasin: 0, creative: 2 } 
     }
   ]
