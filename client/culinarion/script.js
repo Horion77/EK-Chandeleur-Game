@@ -385,7 +385,7 @@ const questionsData = [
   id: 1,
   type: "profile",
   question: "Vous vous inspirez plutôt...",
-  image: "https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=600&h=400&fit=crop",
+  image: "images/Image inspi.png",
   reponses: [
     { 
       texte: "Des recettes de chefs et tutoriels YouTube détaillés", 
