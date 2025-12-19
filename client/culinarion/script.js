@@ -384,7 +384,7 @@ const questionsData = [
     {
   id: 1,
   type: "profile",
-  question: "Vous vous inspirez plutôt...",
+  question: "Lorsque vous préparez votre pâte à crêpes, vous vous inspirez plutôt…",
   image: "images/Image inspi.png",
   reponses: [
     { 
