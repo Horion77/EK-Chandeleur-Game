@@ -164,14 +164,51 @@
         </div>
       </section>
 
-      <!-- STATS -->
-      <section class="card hidden" id="statsCard">
-        <div class="card-header">
-          <h2>Stats</h2>
-          <p class="muted">À brancher ensuite.</p>
-        </div>
-        <div class="muted">À venir.</div>
-      </section>
+     <!-- STATS -->
+<section class="card hidden" id="statsCard">
+  <div class="card-header row-between">
+    <div>
+      <h2>Statistiques</h2>
+      <p class="muted">Participations et clics produits</p>
+    </div>
+    <select id="statsEnseigneFilter">
+      <option value="">Toutes enseignes</option>
+      <option value="ambiance-styles">Ambiance & Styles</option>
+      <option value="culinarion">Culinarion</option>
+    </select>
+  </div>
+
+  <!-- Stats Globales -->
+  <div style="padding: 20px; border-bottom: 1px solid var(--border);">
+    <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--accent);">📊 Vue d'ensemble</h3>
+    <div id="globalStatsContainer" class="muted">Chargement...</div>
+  </div>
+
+  <!-- Top Produits -->
+  <div style="padding: 20px; border-bottom: 1px solid var(--border);">
+    <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--accent);">🏆 Top 10 Produits Cliqués</h3>
+    <div id="topProductsContainer" class="muted">Chargement...</div>
+  </div>
+
+  <!-- Clics par Profil -->
+  <div style="padding: 20px; border-bottom: 1px solid var(--border);">
+    <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--accent);">👥 Clics par Profil</h3>
+    <div id="clicksByProfilContainer" class="muted">Chargement...</div>
+  </div>
+
+  <!-- Taux de Conversion -->
+  <div style="padding: 20px; border-bottom: 1px solid var(--border);">
+    <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--accent);">📈 Taux de Clic</h3>
+    <div id="clickRateContainer" class="muted">Chargement...</div>
+  </div>
+
+  <!-- Timeline -->
+  <div style="padding: 20px;">
+    <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--accent);">📅 Évolution (30 derniers jours)</h3>
+    <div id="timelineContainer" class="muted">Chargement...</div>
+  </div>
+</section>
+
 
       <!-- TESTS -->
       <section class="card hidden" id="testsCard">
