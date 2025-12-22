@@ -608,7 +608,7 @@ function renderResults(finalProfile) {
     const produitDiv = document.createElement('a');
     produitDiv.className = 'produit-item';
     produitDiv.href = produit.url;
-    produitDiv.target = '_blank';
+    
     produitDiv.innerHTML = `
       <img src="${produit.image}" alt="${produit.nom}" class="produit-image">
       <div class="produit-info">
