@@ -417,7 +417,13 @@ function setView(view) {
   if (pageTitle) pageTitle.textContent = label;
 
   setAuthUi();
+  
+  // ⭐ AJOUTE CES LIGNES
+  if (view === 'stats' && isAuthed()) {
+    loadStats();
+  }
 }
+
 
 function debounce(fn, wait) {
   let t = null;
@@ -521,21 +527,18 @@ function wireEvents() {
 
 async function loadStats() {
   try {
-    const token = localStorage.getItem('adminToken');
-    const enseigne = document.getElementById('statsEnseigneFilter').value;
+    const token = getToken(); // ✅ Utilise la fonction getToken() existante
+    const enseigne = document.getElementById('statsEnseigneFilter')?.value || '';
     
     // Stats globales (participations)
-    const globalRes = await fetch(`${API_BASE_URL}/api/stats`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    const globalData = await globalRes.json();
+    const globalRes = await apiFetch('/api/stats');
+    const globalData = globalRes;
     
     // Stats clics produits
-    const clicksRes = await fetch(
-      `${API_BASE_URL}/api/stats/product-clicks${enseigne ? `?enseigne=${enseigne}` : ''}`,
-      { headers: { Authorization: `Bearer ${token}` } }
+    const clicksRes = await apiFetch(
+      `/api/stats/product-clicks${enseigne ? `?enseigne=${enseigne}` : ''}`
     );
-    const clicksData = await clicksRes.json();
+    const clicksData = clicksRes;
     
     renderGlobalStats(globalData);
     renderTopProducts(clicksData.topProducts);
@@ -545,9 +548,176 @@ async function loadStats() {
     
   } catch (err) {
     console.error('Erreur chargement stats:', err);
-    showToast('Erreur chargement stats', 'error');
+    toastMsg('Erreur chargement stats'); // ✅ Utilise toastMsg existant
   }
 }
+
+function renderGlobalStats(data) {
+  const container = document.getElementById('globalStatsContainer');
+  if (!container) return;
+  
+  const { global, byEnseigne, byProfil } = data;
+  
+  container.innerHTML = `
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+      <div class="stat-card">
+        <div class="stat-value">${global.total_participants}</div>
+        <div class="stat-label">Participants totaux</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${global.all_levels_done_count}</div>
+        <div class="stat-label">Ont terminé les 3 jeux</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${Math.round((global.all_levels_done_count / global.total_participants) * 100)}%</div>
+        <div class="stat-label">Taux de complétion</div>
+      </div>
+    </div>
+    
+    <h4 style="margin: 20px 0 10px; font-size: 14px; color: var(--text-secondary);">Par enseigne</h4>
+    <table class="table" style="margin-top: 10px;">
+      <thead>
+        <tr>
+          <th>Enseigne</th>
+          <th>Total</th>
+          <th>Complétés</th>
+          <th>Opt-in</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${byEnseigne.map(e => `
+          <tr>
+            <td><strong>${e.enseigne}</strong></td>
+            <td>${e.total}</td>
+            <td>${e.completes} (${Math.round((e.completes/e.total)*100)}%)</td>
+            <td>${e.opt_in_count} (${Math.round((e.opt_in_count/e.total)*100)}%)</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderTopProducts(products) {
+  const container = document.getElementById('topProductsContainer');
+  if (!container) return;
+  
+  if (!products || products.length === 0) {
+    container.innerHTML = '<p class="muted">Aucun clic produit enregistré.</p>';
+    return;
+  }
+  
+  const maxClicks = products[0].clicks;
+  
+  container.innerHTML = `
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      ${products.map((p, idx) => `
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="min-width: 30px; font-weight: 600; color: ${idx < 3 ? 'var(--accent)' : 'var(--text-secondary)'};">
+            ${idx + 1}
+          </div>
+          <div style="flex: 1;">
+            <div style="font-weight: 500;">${escapeHtml(p.product_name)}</div>
+            <div style="font-size: 12px; color: var(--text-secondary);">${p.unique_users} utilisateurs uniques</div>
+          </div>
+          <div style="min-width: 80px; text-align: right; font-weight: 600;">
+            ${p.clicks} clics
+          </div>
+          <div style="width: 200px; height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden;">
+            <div style="width: ${(p.clicks/maxClicks)*100}%; height: 100%; background: var(--accent); transition: width 0.3s;"></div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderClicksByProfil(profils) {
+  const container = document.getElementById('clicksByProfilContainer');
+  if (!container) return;
+  
+  if (!profils || profils.length === 0) {
+    container.innerHTML = '<p class="muted">Aucune donnée.</p>';
+    return;
+  }
+  
+  const total = profils.reduce((sum, p) => sum + p.clicks, 0);
+  
+  container.innerHTML = `
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
+      ${profils.map(p => `
+        <div class="stat-card">
+          <div class="stat-value">${p.clicks}</div>
+          <div class="stat-label">${escapeHtml(p.profil) || 'Non défini'}</div>
+          <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
+            ${Math.round((p.clicks/total)*100)}% du total
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderClickRate(rate) {
+  const container = document.getElementById('clickRateContainer');
+  if (!container) return;
+  
+  if (!rate) {
+    container.innerHTML = '<p class="muted">Aucune donnée.</p>';
+    return;
+  }
+  
+  container.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 40px;">
+      <div style="flex: 1;">
+        <div style="font-size: 48px; font-weight: 700; color: var(--accent);">
+          ${rate.taux_clic_pourcent}%
+        </div>
+        <div style="font-size: 14px; color: var(--text-secondary); margin-top: 8px;">
+          ${rate.users_qui_cliquent} utilisateurs sur ${rate.total_participants} ont cliqué sur au moins un produit
+        </div>
+      </div>
+      <div style="width: 200px; height: 200px; border-radius: 50%; background: conic-gradient(
+        var(--accent) 0deg ${rate.taux_clic_pourcent * 3.6}deg,
+        var(--bg-secondary) ${rate.taux_clic_pourcent * 3.6}deg 360deg
+      ); display: flex; align-items: center; justify-content: center;">
+        <div style="width: 160px; height: 160px; border-radius: 50%; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700;">
+          ${rate.taux_clic_pourcent}%
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderTimeline(days) {
+  const container = document.getElementById('timelineContainer');
+  if (!container) return;
+  
+  if (!days || days.length === 0) {
+    container.innerHTML = '<p class="muted">Aucune donnée.</p>';
+    return;
+  }
+  
+  container.innerHTML = `
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Clics</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${days.map(d => `
+          <tr>
+            <td>${new Date(d.jour).toLocaleDateString('fr-FR')}</td>
+            <td>${d.clicks}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
 
 function renderGlobalStats(data) {
   const container = document.getElementById('globalStatsContainer');
@@ -706,6 +876,11 @@ function renderTimeline(days) {
 }
 
 // Event listener pour le filtre enseigne dans Stats
-document.getElementById('statsEnseigneFilter').addEventListener('change', () => {
-  if (currentView === 'stats') loadStats();
-});
+const statsFilter = document.getElementById('statsEnseigneFilter');
+if (statsFilter) {
+  statsFilter.addEventListener('change', () => {
+    if (state.view === 'stats' && isAuthed()) { // ✅ Utilise state.view
+      loadStats();
+    }
+  });
+}
