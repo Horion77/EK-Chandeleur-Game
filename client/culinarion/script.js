@@ -619,13 +619,47 @@ function renderResults(finalProfile) {
       </div>
     `;
 
-    produitDiv.addEventListener('click', () => {
-      produitsCliques.push({
-        nom: produit.nom,
-        url: produit.url,
-        ts: new Date().toISOString()
-      });
-    });
+    produitDiv.addEventListener('click', (e) => {
+  e.preventDefault(); // Empêche la navigation immédiate
+  
+  // 1. Ajout local dans l'array (backup pour formulaire)
+  produitsCliques.push({
+    nom: produit.nom,
+    url: produit.url,
+    ts: new Date().toISOString()
+  });
+  
+  // 2. Tracking temps réel en base de données
+  const trackingData = JSON.stringify({
+    session_id: getOrCreateSessionId(),
+    product_name: produit.nom,
+    product_url: produit.url,
+    profil: finalProfile,
+    enseigne: window.APP_CONFIG?.ENSEIGNE || 'culinarion'
+  });
+  
+  const apiUrl = `${window.APP_CONFIG.API_BASE_URL}/api/product-clicks`;
+  
+  // sendBeacon garantit l'envoi même si la page se ferme immédiatement
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(
+      apiUrl, 
+      new Blob([trackingData], { type: 'application/json' })
+    );
+  } else {
+    // Fallback pour navigateurs anciens (< 2015)
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: trackingData,
+      keepalive: true // Garantit que la requête continue même si page se ferme
+    }).catch(err => console.warn('Tracking produit échoué:', err));
+  }
+  
+  // 3. Navigation vers le produit dans le même onglet
+  window.location.href = produit.url;
+});
+
 
     produitsContainer.appendChild(produitDiv);
   });

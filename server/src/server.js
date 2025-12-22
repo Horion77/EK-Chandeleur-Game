@@ -54,6 +54,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/participants', require('./routes/participants'));
 app.use('/api/stats', require('./routes/stats'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/product-clicks', require('./routes/product-clicks'));
 app.use('/shared', express.static(path.join(CLIENT_DIR, 'shared')));
 
 
