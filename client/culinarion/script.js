@@ -554,27 +554,27 @@ const produitsParProfil = {
     { 
       nom: "Balance électronique", 
       url: "https://www.culinarion.com/articles/cristel-balance-electronique-rechargeable-10kg.13486", 
-      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCRIST/BTABLE/FCRIST-BTABLE.jpg"
+      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCRIST/TCBER10N/TCBET10N.jpg"
     },
     { 
       nom: "Fouet inox 30 cm", 
       url: "https://www.culinarion.com/articles/chefs-co-fouet-inox-30-cm.2623", 
-      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCHEFC/188240/FCHEFC-188240.jpg"
+      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCHEFC/188317/FCHEFC-188317.jpg"
     },
     { 
       nom: "Tamis à farine 16 cm", 
       url: "https://www.culinarion.com/articles/de-buyer-tamis-a-farine-16-cm.3371", 
-      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FDEBU2/3115160/FDEBU2-3115160.jpg"
+      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FDEBUY/4604.16/FDEBUY-4604.16.jpg"
     },
     { 
       nom: "Bol à mixer antidérapant", 
       url: "https://www.culinarion.com/articles/chefs-co-bol-a-mixer-antiderapant-24cm.12883", 
-      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCHEFC/190740/FCHEFC-190740.jpg"
+      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCHEFC/188381/188381.jpg"
     },
     { 
       nom: "Crêpière 28 cm", 
       url: "https://www.culinarion.com/articles/chefs-co-poele-a-crepes-28-cm.10291", 
-      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCHEFC/188640/FCHEFC-188640.jpg"
+      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCHEFC/193802/Crepe%20Pfanne%20NEU.jpg"
     }
   ],
   sarrasin: [
