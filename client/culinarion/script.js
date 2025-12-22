@@ -551,21 +551,78 @@ function passerQuestionsSuivante() {
 /* === PRODUITS PAR PROFIL === */
 const produitsParProfil = {
   precision: [
-    { nom: "Poêle à crêpes", url: "https://ambianceetstyles.com/articles/mastrad-crepiere-antiadhesive-28-cm.15963", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FMASTR/F63388/FMASTR-F63388.jpg" },
-    { nom: "Plat de présentation", url: "https://ambianceetstyles.com/articles/pasabhace-plat-a-tarte-cloche-d-32-cm.23449", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FBASTI/362649/362649.jpg" },
-    { nom: "Spatules colorées", url: "https://ambianceetstyles.com/articles/mastrad-spatule-en-silicone-flipper-gris-33cm.21545", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FMASTR/F10014/3485990100140_2.jpg" }
+    { 
+      nom: "Balance électronique", 
+      url: "https://www.culinarion.com/articles/cristel-balance-electronique-rechargeable-10kg.13486", 
+      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCRIST/BTABLE/FCRIST-BTABLE.jpg"
+    },
+    { 
+      nom: "Fouet inox 30 cm", 
+      url: "https://www.culinarion.com/articles/chefs-co-fouet-inox-30-cm.2623", 
+      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCHEFC/188240/FCHEFC-188240.jpg"
+    },
+    { 
+      nom: "Tamis à farine 16 cm", 
+      url: "https://www.culinarion.com/articles/de-buyer-tamis-a-farine-16-cm.3371", 
+      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FDEBU2/3115160/FDEBU2-3115160.jpg"
+    },
+    { 
+      nom: "Bol à mixer antidérapant", 
+      url: "https://www.culinarion.com/articles/chefs-co-bol-a-mixer-antiderapant-24cm.12883", 
+      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCHEFC/190740/FCHEFC-190740.jpg"
+    },
+    { 
+      nom: "Crêpière 28 cm", 
+      url: "https://www.culinarion.com/articles/chefs-co-poele-a-crepes-28-cm.10291", 
+      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCHEFC/188640/FCHEFC-188640.jpg"
+    }
   ],
   sarrasin: [
-    { nom: "Poêle à crêpes", url: "https://ambianceetstyles.com/articles/chefs-co-poele-a-crepes-28-cm.21088", image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=200&h=200&fit=crop" },
-    { nom: "Shaker", url: "https://www.culinarion.com/articles/cookut-shaker-a-crepes-et-a-pancakes.2742", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCOOKU/MIAM/FCOOKU-MIAM@5.jpg" },
-    { nom: "Tartineur", url: "https://ambianceetstyles.com/articles/guzzini-tartineur-feeling-rouge.4751", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FFRATE/23000665/FFRATE-23000665.jpg" }
+    { 
+      nom: "Crêpière en fonte 30cm", 
+      url: "https://www.culinarion.com/articles/staub-crepiere-en-fonte-30cm.8504", 
+      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FZWILL/1004086/FZWILL-1004086.jpg"
+    },
+    { 
+      nom: "Spatule à crêpes longue", 
+      url: "https://www.culinarion.com/articles/oxo-spatule-a-crepes-et-omelettes.10803", 
+      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FOXO/OX11282700/spatule-a-crepes-et-omelettes%20(1).jpg"
+    },
+    { 
+      nom: "Spray huile et vinaigre", 
+      url: "https://www.culinarion.com/articles/cole-mason-spray-huile-et-vinaigre.3596", 
+      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCOLEM/CH103699/FCOLEM-CH103699.jpg"
+    },
+    { 
+      nom: "Râteau plat à crêpes", 
+      url: "https://www.culinarion.com/articles/ltellier-rateau-a-crepes-raclette.3988", 
+      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FTELLI/NRC02-1/rateau-crepes-raclette.jpg"
+    }
   ],
   creative: [
-    { nom: "Poêle à crêpes", url: "https://ambianceetstyles.com/articles/mastrad-crepiere-ceramique.25920", image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=200&h=200&fit=crop" },
-    { nom: "Louche", url: "https://ambianceetstyles.com/articles/chefs-co-louche-inox-30-cm.3602", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCHEFC/188320/FCHEFC-188320.jpg" },
-    { nom: "Râteau à crêpes", url: "https://ambianceetstyles.com/articles/ltellier-rateau-a-crepes-raclette.17135", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FTELLI/NRC02-1/rateau-crepes-raclette.jpg" }
+    { 
+      nom: "Crêpière en fonte 30cm", 
+      url: "https://www.culinarion.com/articles/staub-crepiere-en-fonte-30cm.8504", 
+      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FZWILL/1004086/FZWILL-1004086.jpg"
+    },
+    { 
+      nom: "Siphon aluminium 0.5L", 
+      url: "https://www.culinarion.com/articles/gobel-siphon-aluminium-05-l.13041", 
+      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FGOBEL/YC80105/YC80105_packshot%20(gravure%20Gobel).jpg"
+    },
+    { 
+      nom: "Zesteur vert sauge", 
+      url: "https://www.culinarion.com/articles/microplane-zesteur-vert-sauge.9754", 
+      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FMICRO/46723E/FMICRO-46723%208.jpg"
+    },
+    { 
+      nom: "Râteau à crêpes", 
+      url: "https://www.culinarion.com/articles/ltellier-rateau-a-crepes-raclette.3988", 
+      image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FTELLI/NRC02-1/rateau-crepes-raclette.jpg"
+    }
   ]
 };
+
 
 /* === PROFIL & RENDU RÉSULTATS === */
 function computeFinalProfile() {
