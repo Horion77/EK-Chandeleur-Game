@@ -11,6 +11,7 @@
 </head>
 <body>
 
+
 <div class="game-card">
     <!-- HEADER -->
     <div class="card-header">
@@ -23,20 +24,31 @@
         </div>
     </div>
 
+
     <!-- ÉTAPE 1 : MENU PRINCIPAL -->
     <div class="step-container active" id="step-1">
         <h1>Le Grand Parcours Chandeleur</h1>
+        
+        <!-- ⭐ NOUVELLE IMAGE DU LOT À GAGNER -->
+        <div class="prize-showcase">
+            <img src="https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FMASTR/F63388/FMASTR-F63388@2.jpg" alt="Crêpière MASTRAD" class="prize-image">
+            <p class="prize-label">À GAGNER</p>
+        </div>
+        
         <p class="subtitle">Complétez les 3 défis pour découvrir votre profil<br>et tenter de gagner une crêpière MASTRAD&nbsp;!</p>
+
 
         <div class="triangle-container">
             <svg class="triangle-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
                 <path d="M 30 50 L 270 50 L 150 250 Z" />
             </svg>
 
+
             <div class="node node-1 unlocked" data-game="1" onclick="launchLevel(1)">
                 <div class="node-ring"></div>
                 <img src="images/IMAGE_SELECT_MEMORY.png" class="node-img" alt="Jeu 1">
             </div>
+
 
             <div class="node node-2 locked" data-game="2" onclick="launchLevel(2)">
                 <div class="node-ring"></div>
@@ -44,19 +56,23 @@
                 <div class="node-lock">🔒</div>
             </div>
 
+
             <div class="node node-3 locked" data-game="3" onclick="launchLevel(3)">
                 <div class="node-ring"></div>
                 <img src="images/QUIZZ.png" class="node-img" alt="Jeu 3">
                 <div class="node-lock">🔒</div>
             </div>
 
+
             <button class="center-node locked" id="centerGiftBtn" onclick="launchFinalForm()" disabled>
                 <span class="gift-icon">🎁</span>
             </button>
         </div>
 
+
         <p class="instruction-text">Cliquez sur un défi pour commencer</p>
     </div>
+
 
     <!-- ÉTAPE 2 : JEU MEMORY -->
     <div class="step-container" id="step-2">
@@ -66,6 +82,7 @@
         <p>Retrouvez les paires d'ingrédients !</p>
         <div class="memory-grid" id="memoryGrid"></div>
     </div>
+
 
     <!-- ÉTAPE 3 : JEU DES MOTS -->
     <div class="step-container" id="step-wordgame">
@@ -82,6 +99,7 @@
         </div>
     </div>
 
+
     <!-- ÉTAPE 4 : QUIZ -->
     <div class="step-container" id="step-3">
         <button class="btn-back" onclick="backToMenu()">← Retour</button>
@@ -91,17 +109,19 @@
         <div id="optionsContainer"></div>
     </div>
 
-    <!-- ÉTAPE 5 : FORMULAIRE -->
+
     <!-- ÉTAPE 5 : FORMULAIRE -->
 <div class="step-container" id="step-4">
     <div class="success-icon">🎉</div>
     <h1>Félicitations !</h1>
     <p>Renseignez vos informations pour découvrir votre profil Chandeleur et participer au tirage au sort.</p>
 
+
     <form onsubmit="submitForm(event)" class="form-container">
         <input type="text" class="input-field" placeholder="Prénom *" required id="prenom">
         <input type="text" class="input-field" placeholder="Nom *" required id="nom">
         <input type="email" class="input-field" placeholder="Email *" required id="email">
+
 
         <select class="input-field" required id="magasin">
             <option value="" disabled selected>Sélectionnez votre magasin *</option>
@@ -191,23 +211,28 @@
                 <option>BELFORT</option>
         </select>
 
+
         <!-- ⭐ NOUVELLES CHECKBOXES OBLIGATOIRES -->
         <label class="checkbox-label">
             <input type="checkbox" required class="checkbox-input" id="accept_reglement">
             <span>Oui, j'ai pris connaissance du <a href="/shared/reglement.html" target="_blank" style="color: #e63946; text-decoration: underline;">règlement</a> et je participe *</span>
         </label>
 
+
         <label class="checkbox-label">
             <input type="checkbox" required class="checkbox-input" id="accept_rgpd">
             <span>J'accepte que mes données à caractère personnel soient collectées pour participer au jeu *</span>
         </label>
+
 
         <label class="checkbox-label">
             <input type="checkbox" class="checkbox-input" id="opt_in">
             <span>J'accepte de recevoir des communications personnalisées d'Ambiance & Styles</span>
         </label>
 
+
         <button type="submit" class="btn-main">Découvrir mon profil</button>
+
 
         <!-- ⭐ TEXTE RGPD EN BAS -->
         <p style="font-size: 11px; color: #666; margin-top: 20px; line-height: 1.4;">
@@ -217,6 +242,7 @@
         </p>
     </form>
 </div>
+
 
 
     <!-- ÉTAPE 6 : RÉSULTATS -->
@@ -233,6 +259,7 @@
 </p>
     </div>
 
+
     <!-- MODAL NOTIFICATION CUSTOM -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-box">
@@ -243,11 +270,14 @@
         </div>
     </div>
 
+
 </div>
+
 
 <!-- IMPORTANT : chargement ABSOLU (sinon /ambiance-styles/shared/... => 404) -->
 <script src="config.js"></script>
 <script src="/shared/js/api.js"></script>
+
 
 <script src="script.js"></script>
 </body>

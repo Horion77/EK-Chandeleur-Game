@@ -1003,3 +1003,46 @@ p, .subtitle {
         min-height: 60px;
     }
 }
+/* === IMAGE DU LOT À GAGNER === */
+.prize-showcase {
+    position: relative;
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto 25px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(230, 57, 70, 0.15);
+}
+
+.prize-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 16px;
+}
+
+.prize-label {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: linear-gradient(135deg, #e63946 0%, #c62828 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
+}
+
+@media (max-width: 480px) {
+    .prize-showcase {
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    .prize-label {
+        font-size: 0.75rem;
+        padding: 6px 12px;
+    }
+}
