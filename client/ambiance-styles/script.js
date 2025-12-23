@@ -253,7 +253,6 @@ const wordsDatabase = [
   { word: "FLAMBEE", hint: "Technique de cuisson spectaculaire avec alcool" },
   { word: "BRETONNE", hint: "Personne originaire de la terre des crêpes et du cidre" },
   { word: "SUZETTE", hint: "Crêpes ___ : dessert flambé célèbre" },
-  { word: "MIELLAT", hint: "Mélange de miel fondu" },
   { word: "CANNELLE", hint: "Épice parfumée pour aromatiser" },
   { word: "CONFITURE", hint: "Garniture sucrée aux fruits" }
 ];
@@ -392,7 +391,7 @@ const questionsData = [
     id: 1,
     type: "profile",
     question: "Ce soir c'est Chandeleur ! Autour de la table, il y a...",
-    image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=600&h=400&fit=crop",
+    image: "images/Visuel_Couv_2.png",
     reponses: [
       { texte: "Toute la tribu, les voisins... plus on est de fous, plus on rit !", points: { rassemble: 2, duo: 0, tradition: 0 } },
       { texte: "Juste ma moitié ou mon meilleur ami, pour une soirée détendue.", points: { rassemble: 0, duo: 2, tradition: 0 } },
@@ -403,7 +402,7 @@ const questionsData = [
     id: 2,
     type: "profile",
     question: "Niveau garniture, votre crêpe idéale ressemble à quoi ?",
-    image: "https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=600&h=400&fit=crop",
+    image: "images/gateau crêpe parfaite.png",
     reponses: [
       { texte: "Une montagne ! Chantilly, chocolat... je ne vois plus la crêpe.", points: { rassemble: 2, duo: 0, tradition: 0 } },
       { texte: "Créative et Chic : J'adore les associations salées-sucrées.", points: { rassemble: 0, duo: 2, tradition: 0 } },
@@ -425,7 +424,7 @@ const questionsData = [
     id: 4,
     type: "profile",
     question: "Le petit truc en plus que vous glissez dans votre pâte ?",
-    image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=400&fit=crop",
+    image: "images/photo farine.png",
     reponses: [
       { texte: "Un peu de bière ou de cidre.", points: { rassemble: 2, duo: 0, tradition: 0 } },
       { texte: "De la vanille ou fève tonka.", points: { rassemble: 0, duo: 2, tradition: 0 } },
@@ -447,7 +446,7 @@ const questionsData = [
     id: 6,
     type: "profile",
     question: "Votre crêpe parfaite, elle est...",
-    image: "https://images.unsplash.com/photo-1506368249639-73a05d6f6488?w=600&h=400&fit=crop",
+    image: "images/crepe parfaite.png",
     reponses: [
       { texte: "Épaisse et moelleuse comme un pancake", points: { rassemble: 2, duo: 0, tradition: 0 } },
       { texte: "Fine et légère, dentelle de luxe", points: { rassemble: 0, duo: 2, tradition: 0 } },
@@ -547,7 +546,7 @@ const produitsParProfil = {
     { nom: "Beurrier", url: "https://ambianceetstyles.com/articles/guzzini-beurrier-feeling-transparent.4774", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FFRATE/22420000/FFRATE-22420000.jpg" }
   ],
   duo: [
-    { nom: "Poêle à crêpes", url: "https://ambianceetstyles.com/articles/chefs-co-poele-a-crepes-28-cm.21088", image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=200&h=200&fit=crop" },
+    { nom: "Poêle à crêpes", url: "https://ambianceetstyles.com/articles/chefs-co-poele-a-crepes-28-cm.21088", image: "images/visuel Chandeleur.png" },
     { nom: "Vaisselle", url: "https://ambianceetstyles.com/articles/medard-de-noblat-assiette-dessert-shadow-nacre-205cm.5950", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCOUZO/AI06CCB0001AD/FCOUZO-AI06CCB0001AD.jpg" },
     { nom: "Mini ramequins", url: "https://ambianceetstyles.com/articles/medard-de-noblat-coupelle-shadow-nacre-15cm.10729", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCOUZO/AI06CCB0001CG/FCOUZO-AI06CCB0001CG.jpg" },
     { nom: "Shaker", url: "https://www.culinarion.com/articles/cookut-shaker-a-crepes-et-a-pancakes.2742", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCOOKU/MIAM/FCOOKU-MIAM@5.jpg" },
@@ -555,7 +554,7 @@ const produitsParProfil = {
     { nom: "Moule 7 mini blinis", url: "https://ambianceetstyles.com/articles/patisse-moule-a-7-mini-blinis-pancakes.6850", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FPATIS/19233/FPATIS-19233.jpg" }
   ],
   tradition: [
-    { nom: "Poêle à crêpes", url: "https://ambianceetstyles.com/articles/mastrad-crepiere-ceramique.25920", image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=200&h=200&fit=crop" },
+    { nom: "Poêle à crêpes", url: "https://ambianceetstyles.com/articles/mastrad-crepiere-ceramique.25920", image: "images/visuel Chandeleur.png" },
     { nom: "Louche", url: "https://ambianceetstyles.com/articles/chefs-co-louche-inox-30-cm.3602", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCHEFC/188320/FCHEFC-188320.jpg" },
     { nom: "Bol à mixer", url: "https://ambianceetstyles.com/articles/chefs-co-bol-inox-antideparant-20cm.23660", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCHEFC/188380/188380.jpg" },
     { nom: "Râteau à crêpes", url: "https://ambianceetstyles.com/articles/ltellier-rateau-a-crepes-raclette.17135", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FTELLI/NRC02-1/rateau-crepes-raclette.jpg" },

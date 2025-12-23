@@ -92,20 +92,20 @@
     </div>
 
     <!-- ÉTAPE 5 : FORMULAIRE -->
-    <div class="step-container" id="step-4">
-        <div class="success-icon">🎉</div>
-        <h1>Félicitations !</h1>
-        <p>Renseignez vos informations pour découvrir votre profil Chandeleur et participer au tirage au sort.</p>
+    <!-- ÉTAPE 5 : FORMULAIRE -->
+<div class="step-container" id="step-4">
+    <div class="success-icon">🎉</div>
+    <h1>Félicitations !</h1>
+    <p>Renseignez vos informations pour découvrir votre profil Chandeleur et participer au tirage au sort.</p>
 
-        <form onsubmit="submitForm(event)" class="form-container">
-            <input type="text" class="input-field" placeholder="Prénom" required id="prenom">
-            <input type="text" class="input-field" placeholder="Nom" required id="nom">
-            <input type="email" class="input-field" placeholder="Email" required id="email">
+    <form onsubmit="submitForm(event)" class="form-container">
+        <input type="text" class="input-field" placeholder="Prénom *" required id="prenom">
+        <input type="text" class="input-field" placeholder="Nom *" required id="nom">
+        <input type="email" class="input-field" placeholder="Email *" required id="email">
 
-            <!-- NOUVEAU : Magasin -->
-            <select class="input-field" required id="magasin">
-                <option value="" disabled selected>Sélectionnez votre magasin</option>
-                <option>SOISSONS</option>
+        <select class="input-field" required id="magasin">
+            <option value="" disabled selected>Sélectionnez votre magasin *</option>
+            <option>SOISSONS</option>
                 <option>VICHY</option>
                 <option>GAP</option>
                 <option>ANTIBES</option>
@@ -189,16 +189,35 @@
                 <option>LIMOGES</option>
                 <option>NEUFCHATEAU</option>
                 <option>BELFORT</option>
-            </select>
+        </select>
 
-            <label class="checkbox-label">
-                <input type="checkbox" required class="checkbox-input" id="opt_in">
-                <span>J'accepte de participer au jeu concours et de recevoir des communications personnalisées</span>
-            </label>
+        <!-- ⭐ NOUVELLES CHECKBOXES OBLIGATOIRES -->
+        <label class="checkbox-label">
+            <input type="checkbox" required class="checkbox-input" id="accept_reglement">
+            <span>Oui, j'ai pris connaissance du <a href="/shared/reglement.html" target="_blank" style="color: #e63946; text-decoration: underline;">règlement</a> et je participe *</span>
+        </label>
 
-            <button type="submit" class="btn-main">Découvrir mon profil</button>
-        </form>
-    </div>
+        <label class="checkbox-label">
+            <input type="checkbox" required class="checkbox-input" id="accept_rgpd">
+            <span>J'accepte que mes données à caractère personnel soient collectées pour participer au jeu *</span>
+        </label>
+
+        <label class="checkbox-label">
+            <input type="checkbox" class="checkbox-input" id="opt_in">
+            <span>J'accepte de recevoir des communications personnalisées d'Ambiance & Styles</span>
+        </label>
+
+        <button type="submit" class="btn-main">Découvrir mon profil</button>
+
+        <!-- ⭐ TEXTE RGPD EN BAS -->
+        <p style="font-size: 11px; color: #666; margin-top: 20px; line-height: 1.4;">
+            Conformément à la réglementation en vigueur sur la protection des données personnelles, vous disposez de plusieurs droits, notamment l'accès, la rectification, la limitation, la portabilité (lorsque cela est possible) et la suppression des données vous concernant.<br>
+            Pour exercer tout droit concernant vos données personnelles, contactez-nous à l'adresse <a href="mailto:info@ekfrance.fr" style="color: #e63946;">info@ekfrance.fr</a>.<br>
+            Pour plus d'informations, vous pouvez consulter notre <a href="https://ambianceetstyles.com/page/protection-des-donnees" target="_blank" style="color: #e63946;">Politique de Confidentialité</a>.
+        </p>
+    </form>
+</div>
+
 
     <!-- ÉTAPE 6 : RÉSULTATS -->
     <div class="step-container" id="step-5">

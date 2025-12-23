@@ -254,7 +254,6 @@ const wordsDatabase = [
   { word: "FLAMBEE", hint: "Technique de cuisson spectaculaire avec alcool" },
   { word: "BRETONNE", hint: "Personne originaire de la terre des crêpes et du cidre" },
   { word: "SUZETTE", hint: "Crêpes ___ : dessert flambé célèbre" },
-  { word: "MIELLAT", hint: "Mélange de miel fondu" },
   { word: "CANNELLE", hint: "Épice parfumée pour aromatiser" },
   { word: "CONFITURE", hint: "Garniture sucrée aux fruits" }
 ];
@@ -459,7 +458,7 @@ const questionsData = [
     id: 6,
     type: "profile",
     question: "Votre crêpe parfaite, elle est...",
-    image: "https://images.unsplash.com/photo-1506368249639-73a05d6f6488?w=600&h=400&fit=crop",
+    image: "images/photo crepe parfaite.png",
     reponses: [
       { texte: "Épaisse et moelleuse comme un pancake", points: { precision: 0, sarrasin: 0, creative: 2 } },
       { texte: "Fine et légère, dentelle de luxe", points: { precision: 2, sarrasin: 0, creative: 0 } },
