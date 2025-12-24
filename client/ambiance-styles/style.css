@@ -1051,3 +1051,115 @@ p, .subtitle {
     }
 }
 
+/* === IMAGE DU LOT À GAGNER (CRÊPIÈRE MASTRAD) === */
+.prize-showcase {
+    position: relative;
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto 20px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(118, 44, 57, 0.15);
+}
+
+.prize-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 16px;
+}
+
+.prize-label {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: linear-gradient(135deg, #e63946 0%, #c62828 100%);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 12px rgba(230, 57, 70, 0.4);
+    text-transform: uppercase;
+}
+
+@media (max-width: 480px) {
+    .prize-showcase {
+        max-width: 180px;
+    }
+    
+    .prize-label {
+        font-size: 0.7rem;
+        padding: 5px 12px;
+        top: 6px;
+        right: 6px;
+    }
+}
+/* === IMAGE D'ACCROCHE HERO === */
+.hero-image {
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    margin: 0 auto 20px;
+    display: block;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #762C39 0%, #8D3747 100%);
+    padding: 15px;
+    box-shadow: 0 4px 16px rgba(118, 44, 57, 0.2);
+}
+
+@media (max-width: 480px) {
+    .hero-image {
+        max-width: 250px;
+        margin-bottom: 15px;
+        padding: 12px;
+    }
+}
+
+/* === IMAGE DU LOT À GAGNER (CRÊPIÈRE MASTRAD) === */
+.prize-showcase {
+    position: relative;
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto 20px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(118, 44, 57, 0.15);
+}
+
+.prize-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 16px;
+}
+
+.prize-label {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: linear-gradient(135deg, #e63946 0%, #c62828 100%);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 12px rgba(230, 57, 70, 0.4);
+    text-transform: uppercase;
+}
+
+@media (max-width: 480px) {
+    .prize-showcase {
+        max-width: 180px;
+    }
+    
+    .prize-label {
+        font-size: 0.7rem;
+        padding: 5px 12px;
+        top: 6px;
+        right: 6px;
+    }
+}
+

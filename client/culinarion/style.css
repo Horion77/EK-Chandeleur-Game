@@ -981,3 +981,49 @@ p, .subtitle {
         min-height: 60px;
     }
 }
+/* === IMAGE DU LOT À GAGNER (SHAKER COOKUT) === */
+.prize-showcase {
+    position: relative;
+    width: 100%;
+    max-width: 160px;
+    margin: 0 auto 20px;
+    border-radius: 16px;
+    overflow: visible;
+}
+
+.prize-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(175, 13, 33, 0.15);
+}
+
+.prize-label {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: linear-gradient(135deg, #AF0D21 0%, #8A0A1A 100%);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 0.8px;
+    box-shadow: 0 4px 12px rgba(175, 13, 33, 0.4);
+    text-transform: uppercase;
+}
+
+@media (max-width: 480px) {
+    .prize-showcase {
+        max-width: 140px;
+        margin-bottom: 15px;
+    }
+    
+    .prize-label {
+        font-size: 0.65rem;
+        padding: 4px 10px;
+        top: 5px;
+        right: 5px;
+    }
+}

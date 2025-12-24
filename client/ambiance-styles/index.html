@@ -23,17 +23,31 @@
         </div>
     </div>
 
-    <!-- ÉTAPE 1 : MENU PRINCIPAL -->
-    <div class="step-container active" id="step-1">
-        <h1>Le Grand Parcours Chandeleur</h1>
+    <!-- ⭐ ÉTAPE 0 : ACCUEIL (NOUVELLE PAGE) -->
+    <div class="step-container active" id="step-0">
+        <!-- IMAGE D'ACCROCHE CHANDELEUR -->
+        <img src="images/Accroche Chandeleur.png" alt="Crêpe Party Chandeleur" class="hero-image">
         
-        <!-- ⭐ IMAGE DU LOT À GAGNER -->
+        <!-- IMAGE DE LA CRÊPIÈRE MASTRAD -->
         <div class="prize-showcase">
             <img src="https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FMASTR/F63388/FMASTR-F63388@2.jpg" alt="Crêpière MASTRAD" class="prize-image">
             <p class="prize-label">À GAGNER</p>
         </div>
         
-        <p class="subtitle">Complétez les 3 défis pour découvrir votre profil<br>et tenter de gagner une crêpière MASTRAD&nbsp;!</p>
+        <p class="subtitle">
+            Complétez les 3 défis pour découvrir<br>
+            <strong>quel type de crêpier vous êtes</strong> et tenter de gagner<br>
+            une magnifique crêpière MASTRAD !
+        </p>
+        
+        <button class="btn-main" onclick="showStep('step-1'); updateProgress(1);">
+            Commencer
+        </button>
+    </div>
+
+    <!-- ÉTAPE 1 : MENU PRINCIPAL -->
+    <div class="step-container" id="step-1">
+        <h2>Cliquez sur un défi pour commencer</h2>
 
         <div class="triangle-container">
             <svg class="triangle-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
@@ -62,7 +76,7 @@
             </button>
         </div>
 
-        <p class="instruction-text">Cliquez sur un défi pour commencer</p>
+        <p class="instruction-text">Terminez les 3 jeux pour accéder au formulaire final</p>
     </div>
 
     <!-- ÉTAPE 2 : JEU MEMORY -->
