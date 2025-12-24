@@ -436,7 +436,7 @@ const questionsData = [
     id: 4,
     type: "profile",
     question: "Le petit truc en plus que vous glissez dans votre pâte ?",
-    image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=400&fit=crop",
+    image: "images/aa.png",
     reponses: [
       { texte: "Un peu de bière ou de cidre.", points: { precision: 0, sarrasin: 2, creative: 0 } },
       { texte: "De la vanille ou fève tonka.", points: { precision: 0, sarrasin: 0, creative: 2 } },
@@ -458,7 +458,7 @@ const questionsData = [
     id: 6,
     type: "profile",
     question: "Votre crêpe parfaite, elle est...",
-    image: "images/photo crepe parfaite.png",
+    image: "images/crepe parfaite.png",
     reponses: [
       { texte: "Épaisse et moelleuse comme un pancake", points: { precision: 0, sarrasin: 0, creative: 2 } },
       { texte: "Fine et légère, dentelle de luxe", points: { precision: 2, sarrasin: 0, creative: 0 } },
