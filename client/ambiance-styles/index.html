@@ -26,20 +26,20 @@
     <!-- ⭐ ÉTAPE 0 : ACCUEIL (NOUVELLE PAGE) -->
     <div class="step-container active" id="step-0">
         <!-- IMAGE D'ACCROCHE CHANDELEUR -->
-        <img src="images/Accroche Chandeleur.png" alt="Crêpe Party Chandeleur" class="hero-image">
-        
+        <img data-img="Accroche Chandeleur.png" alt="Crêpe Party Chandeleur" class="hero-image">
+
         <!-- IMAGE DE LA CRÊPIÈRE MASTRAD -->
         <div class="prize-showcase">
             <img src="https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FMASTR/F63388/FMASTR-F63388@2.jpg" alt="Crêpière MASTRAD" class="prize-image">
             <p class="prize-label">À GAGNER</p>
         </div>
-        
+
         <p class="subtitle">
             Complétez les 3 défis pour découvrir<br>
             <strong>quel type de crêpier vous êtes</strong> et tenter de gagner<br>
             une magnifique crêpière MASTRAD !
         </p>
-        
+
         <button class="btn-main" onclick="showStep('step-1'); updateProgress(1);">
             Commencer
         </button>
@@ -56,18 +56,18 @@
 
             <div class="node node-1 unlocked" data-game="1" onclick="launchLevel(1)">
                 <div class="node-ring"></div>
-                <img src="images/IMAGE_SELECT_MEMORY.png" class="node-img" alt="Jeu 1">
+                <img data-img="IMAGE_SELECT_MEMORY.png" class="node-img" alt="Jeu 1">
             </div>
 
             <div class="node node-2 locked" data-game="2" onclick="launchLevel(2)">
                 <div class="node-ring"></div>
-                <img src="images/SALADE_DE_LETTRE.jpg" class="node-img" alt="Jeu 2">
+                <img data-img="SALADE_DE_LETTRE.jpg" class="node-img" alt="Jeu 2">
                 <div class="node-lock">🔒</div>
             </div>
 
             <div class="node node-3 locked" data-game="3" onclick="launchLevel(3)">
                 <div class="node-ring"></div>
-                <img src="images/QUIZZ.png" class="node-img" alt="Jeu 3">
+                <img data-img="QUIZZ.png" class="node-img" alt="Jeu 3">
                 <div class="node-lock">🔒</div>
             </div>
 
@@ -125,6 +125,7 @@
 
             <select class="input-field" required id="magasin">
                 <option value="" disabled selected>Sélectionnez votre magasin *</option>
+                <!-- (liste inchangée) -->
                 <option>SOISSONS</option>
                 <option>VICHY</option>
                 <option>GAP</option>
@@ -259,7 +260,6 @@
             <button class="btn-modal" id="modalBtn" onclick="closeModal()">Continuer</button>
         </div>
     </div>
-
 </div>
 
 <script src="config.js"></script>

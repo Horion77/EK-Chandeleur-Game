@@ -1,4 +1,8 @@
 const SESSION_ID_KEY = "culinarion_chandeleur_session_id";
+function img(fileName) {
+  // fileName ex: "QUIZZ.png"
+  return `${window.CDN_IMAGES_BASE}${encodeURIComponent(fileName)}`;
+}
 
 function getOrCreateSessionId() {
   let id = localStorage.getItem(SESSION_ID_KEY);
@@ -845,4 +849,7 @@ document.addEventListener("DOMContentLoaded", () => {
     default:
       openMenu();
   }
+});
+document.querySelectorAll("img[data-img]").forEach((el) => {
+  el.src = img(el.getAttribute("data-img"));
 });
