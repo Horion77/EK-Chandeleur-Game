@@ -160,12 +160,12 @@ function resetGame() {
 
 /* === JEU 1 : MEMORY AVEC IMAGES === */
 const memoryImages = [
-  { id: 'crepe', url: 'images/IMAGE_1_MEMORY_CREPE_CHOCO_BANANE.png', alt: 'Crêpe choco-banane' },
-  { id: 'ustensiles', url: 'images/IMAGE_2_MEMORY_USTENSILES.png', alt: 'USTENSILES' },
-  { id: 'ingredients', url: 'images/IMAGE_6_INGREDIENTS.png', alt: 'ingredients' },
-  { id: 'beurre', url: 'images/IMAGE_3_BEURIER.png', alt: 'Beurre' },
-  { id: 'shakeur', url: 'images/IMAGE_4_SHAKEUR CREPE.png', alt: 'shakeur' },
-  { id: 'socle', url: 'images/IMAGE_5_COUVERCLE_SOCLE.png', alt: 'socle' }
+  { id: 'crepe', url: 'images/IMAGE_1_MEMORY_CREPE_CHOCO_BANANE.jpg', alt: 'Crêpe choco-banane' },
+  { id: 'ustensiles', url: 'images/IMAGE_2_MEMORY_USTENSILES.jpg', alt: 'USTENSILES' },
+  { id: 'ingredients', url: 'images/IMAGE_6_INGREDIENTS.jpg', alt: 'ingredients' },
+  { id: 'beurre', url: 'images/IMAGE_3_BEURIER.jpg', alt: 'Beurre' },
+  { id: 'shakeur', url: 'images/IMAGE_4_SHAKEUR CREPE.jpg', alt: 'shakeur' },
+  { id: 'socle', url: 'images/IMAGE_5_COUVERCLE_SOCLE.jpg', alt: 'socle' }
 ];
 
 let gameCards = [...memoryImages, ...memoryImages];
@@ -391,7 +391,7 @@ const questionsData = [
     id: 1,
     type: "profile",
     question: "Ce soir c'est Chandeleur ! Autour de la table, il y a...",
-    image: "images/Visuel_Couv_2.png",
+    image: "images/Visuel_Couv_2.jpg",
     reponses: [
       { texte: "Toute la tribu, les voisins... plus on est de fous, plus on rit !", points: { rassemble: 2, duo: 0, tradition: 0 } },
       { texte: "Juste ma moitié ou mon meilleur ami, pour une soirée détendue.", points: { rassemble: 0, duo: 2, tradition: 0 } },
@@ -402,7 +402,7 @@ const questionsData = [
     id: 2,
     type: "profile",
     question: "Niveau garniture, votre crêpe idéale ressemble à quoi ?",
-    image: "images/gateau crêpe parfaite.png",
+    image: "images/gateau crêpe parfaite.jpg",
     reponses: [
       { texte: "Une montagne ! Chantilly, chocolat... je ne vois plus la crêpe.", points: { rassemble: 2, duo: 0, tradition: 0 } },
       { texte: "Créative et Chic : J'adore les associations salées-sucrées.", points: { rassemble: 0, duo: 2, tradition: 0 } },
@@ -424,7 +424,7 @@ const questionsData = [
     id: 4,
     type: "profile",
     question: "Le petit truc en plus que vous glissez dans votre pâte ?",
-    image: "images/photo farine.png",
+    image: "images/photo farine.jpg",
     reponses: [
       { texte: "Un peu de bière ou de cidre.", points: { rassemble: 2, duo: 0, tradition: 0 } },
       { texte: "De la vanille ou fève tonka.", points: { rassemble: 0, duo: 2, tradition: 0 } },
@@ -446,7 +446,7 @@ const questionsData = [
     id: 6,
     type: "profile",
     question: "Votre crêpe parfaite, elle est...",
-    image: "images/crepe parfaite.png",
+    image: "images/crepe parfaite.jpg",
     reponses: [
       { texte: "Épaisse et moelleuse comme un pancake", points: { rassemble: 2, duo: 0, tradition: 0 } },
       { texte: "Fine et légère, dentelle de luxe", points: { rassemble: 0, duo: 2, tradition: 0 } },
@@ -546,7 +546,7 @@ const produitsParProfil = {
     { nom: "Beurrier", url: "https://ambianceetstyles.com/articles/guzzini-beurrier-feeling-transparent.4774", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FFRATE/22420000/FFRATE-22420000.jpg" }
   ],
   duo: [
-    { nom: "Poêle à crêpes", url: "https://ambianceetstyles.com/articles/chefs-co-poele-a-crepes-28-cm.21088", image: "images/visuel Chandeleur.png" },
+    { nom: "Poêle à crêpes", url: "https://ambianceetstyles.com/articles/chefs-co-poele-a-crepes-28-cm.21088", image: "images/visuel Chandeleur.jpg" },
     { nom: "Vaisselle", url: "https://ambianceetstyles.com/articles/medard-de-noblat-assiette-dessert-shadow-nacre-205cm.5950", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCOUZO/AI06CCB0001AD/FCOUZO-AI06CCB0001AD.jpg" },
     { nom: "Mini ramequins", url: "https://ambianceetstyles.com/articles/medard-de-noblat-coupelle-shadow-nacre-15cm.10729", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCOUZO/AI06CCB0001CG/FCOUZO-AI06CCB0001CG.jpg" },
     { nom: "Shaker", url: "https://www.culinarion.com/articles/cookut-shaker-a-crepes-et-a-pancakes.2742", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCOOKU/MIAM/FCOOKU-MIAM@5.jpg" },
@@ -554,7 +554,7 @@ const produitsParProfil = {
     { nom: "Moule 7 mini blinis", url: "https://ambianceetstyles.com/articles/patisse-moule-a-7-mini-blinis-pancakes.6850", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FPATIS/19233/FPATIS-19233.jpg" }
   ],
   tradition: [
-    { nom: "Poêle à crêpes", url: "https://ambianceetstyles.com/articles/mastrad-crepiere-ceramique.25920", image: "images/visuel Chandeleur.png" },
+    { nom: "Poêle à crêpes", url: "https://ambianceetstyles.com/articles/mastrad-crepiere-ceramique.25920", image: "images/visuel Chandeleur.jpg" },
     { nom: "Louche", url: "https://ambianceetstyles.com/articles/chefs-co-louche-inox-30-cm.3602", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCHEFC/188320/FCHEFC-188320.jpg" },
     { nom: "Bol à mixer", url: "https://ambianceetstyles.com/articles/chefs-co-bol-inox-antideparant-20cm.23660", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FCHEFC/188380/188380.jpg" },
     { nom: "Râteau à crêpes", url: "https://ambianceetstyles.com/articles/ltellier-rateau-a-crepes-raclette.17135", image: "https://d28dhv3a4w5vgt.cloudfront.net/fit-in/1400x1400/filters:fill(ffffff)/produits/FTELLI/NRC02-1/rateau-crepes-raclette.jpg" },

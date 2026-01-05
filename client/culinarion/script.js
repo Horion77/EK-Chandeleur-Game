@@ -1,6 +1,6 @@
 const SESSION_ID_KEY = "culinarion_chandeleur_session_id";
 function img(fileName) {
-  // fileName ex: "QUIZZ.png"
+  // fileName ex: "QUIZZ.jpg"
   return `${window.CDN_IMAGES_BASE}${encodeURIComponent(fileName)}`;
 }
 
@@ -165,12 +165,12 @@ function resetGame() {
 
 /* === JEU 1 : MEMORY AVEC IMAGES === */
 const memoryImages = [
-  { id: 'crepe', url: 'images/IMAGE_1_MEMORY_CREPE_CHOCO_BANANE.png', alt: 'Crêpe choco-banane' },
-  { id: 'ustensiles', url: 'images/IMAGE_2_MEMORY_USTENSILES.png', alt: 'USTENSILES' },
-  { id: 'ingredients', url: 'images/IMAGE_6_INGREDIENTS.png', alt: 'ingredients' },
-  { id: 'beurre', url: 'images/IMAGE_3_BEURIER.png', alt: 'Beurre' },
-  { id: 'shakeur', url: 'images/IMAGE_4_SHAKEUR CREPE.png', alt: 'shakeur' },
-  { id: 'socle', url: 'images/IMAGE_5_COUVERCLE_SOCLE.png', alt: 'socle' }
+  { id: 'crepe', url: 'images/IMAGE_1_MEMORY_CREPE_CHOCO_BANANE.jpg', alt: 'Crêpe choco-banane' },
+  { id: 'ustensiles', url: 'images/IMAGE_2_MEMORY_USTENSILES.jpg', alt: 'USTENSILES' },
+  { id: 'ingredients', url: 'images/IMAGE_6_INGREDIENTS.jpg', alt: 'ingredients' },
+  { id: 'beurre', url: 'images/IMAGE_3_BEURIER.jpg', alt: 'Beurre' },
+  { id: 'shakeur', url: 'images/IMAGE_4_SHAKEUR CREPE.jpg', alt: 'shakeur' },
+  { id: 'socle', url: 'images/IMAGE_5_COUVERCLE_SOCLE.jpg', alt: 'socle' }
 ];
 
 let gameCards = [...memoryImages, ...memoryImages];
@@ -388,7 +388,7 @@ const questionsData = [
   id: 1,
   type: "profile",
   question: "Lorsque vous préparez votre pâte à crêpes, vous vous inspirez plutôt…",
-  image: "images/Image inspi.png",
+  image: "images/Image inspi.jpg",
   reponses: [
     { 
       texte: "Des recettes de chefs et tutoriels YouTube détaillés", 
@@ -408,7 +408,7 @@ const questionsData = [
   id: 2,
   type: "profile",
   question: "Votre plus grand plaisir lorsque vous cuisinez des crêpes est…",
-  image: "images/IMAGE_SEPARE-EN_3.png",
+  image: "images/IMAGE_SEPARE-EN_3.jpg",
 
   reponses: [
     { 
@@ -440,7 +440,7 @@ const questionsData = [
     id: 4,
     type: "profile",
     question: "Le petit truc en plus que vous glissez dans votre pâte ?",
-    image: "images/aa.png",
+    image: "images/aa.jpg",
     reponses: [
       { texte: "Un peu de bière ou de cidre.", points: { precision: 0, sarrasin: 2, creative: 0 } },
       { texte: "De la vanille ou fève tonka.", points: { precision: 0, sarrasin: 0, creative: 2 } },
@@ -462,7 +462,7 @@ const questionsData = [
     id: 6,
     type: "profile",
     question: "Votre crêpe parfaite, elle est...",
-    image: "images/crepe parfaite.png",
+    image: "images/crepe parfaite.jpg",
     reponses: [
       { texte: "Épaisse et moelleuse comme un pancake", points: { precision: 0, sarrasin: 0, creative: 2 } },
       { texte: "Fine et légère, dentelle de luxe", points: { precision: 2, sarrasin: 0, creative: 0 } },
