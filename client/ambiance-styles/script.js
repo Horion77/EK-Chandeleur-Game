@@ -792,6 +792,4 @@ document.addEventListener("DOMContentLoaded", () => {
       openMenu();
   }
 });
-document.querySelectorAll("img[data-img]").forEach((el) => {
-  el.src = img(el.getAttribute("data-img"));
-});
+
